@@ -3,12 +3,12 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Select } from "@/components/ui/select"
 import type { Investment } from "@/types/investment"
 import type { Currency } from "@/hooks/useCurrency"
-import { formatCurrency } from "@/utils/currencyUtils"
+import { formatCurrency, isPolishAsset } from "@/utils/currencyUtils"
 import { convertCurrency } from "@/services/exchangeRates"
 import type { ExchangeRates } from "@/services/exchangeRates"
 import { fetchMultipleHistoricalPrices } from "@/services/historicalPriceApi"
 import type { HistoricalPricePoint } from "@/services/historicalPriceApi"
-import { format, subDays, subMonths, subWeeks, startOfDay } from "date-fns"
+import { format, subMonths, subWeeks } from "date-fns"
 
 type Period = "1w" | "1m" | "3m" | "6m" | "1y" | "all"
 type Granulation = "daily" | "weekly" | "monthly"
@@ -327,10 +327,10 @@ export const InvestmentTimelineChart = ({
             }
 
             if (pricePoint) {
-              const isPolishStock = investment.symbol.includes(".WA") || investment.symbol.includes(".PL")
+              const isPolish = isPolishAsset(investment)
               const purchaseCurrency = investment.purchaseCurrency || "USD"
               let priceInPurchaseCurrency = pricePoint.price
-              if (isPolishStock && purchaseCurrency === "PLN") {
+              if (isPolish && purchaseCurrency === "PLN") {
                 priceInPurchaseCurrency = pricePoint.price
               } else if (exchangeRates && purchaseCurrency !== "USD") {
                 priceInPurchaseCurrency = convertCurrency(
@@ -342,12 +342,12 @@ export const InvestmentTimelineChart = ({
               }
               totalValue += investment.volume * convert(priceInPurchaseCurrency, purchaseCurrency)
             } else {
-              const isPolishStock = investment.symbol.includes(".WA") || investment.symbol.includes(".PL")
+              const isPolish = isPolishAsset(investment)
               const purchaseCurrency = investment.purchaseCurrency || "USD"
               totalValue += investment.volume * convert(investment.purchasePrice, purchaseCurrency)
             }
           } else {
-            const isPolishStock = investment.symbol.includes(".WA") || investment.symbol.includes(".PL")
+            const isPolish = isPolishAsset(investment)
             const purchaseCurrency = investment.purchaseCurrency || "USD"
             totalValue += investment.volume * convert(investment.purchasePrice, purchaseCurrency)
           }
@@ -370,7 +370,7 @@ export const InvestmentTimelineChart = ({
           purchaseDate.setHours(0, 0, 0, 0)
           
           if (earliestPurchaseDate.getTime() === purchaseDate.getTime()) {
-            const isPolishStock = investment.symbol.includes(".WA") || investment.symbol.includes(".PL")
+            const isPolish = isPolishAsset(investment)
             const purchaseCurrency = investment.purchaseCurrency || "USD"
             initialValue += investment.volume * convert(investment.purchasePrice, purchaseCurrency)
           }

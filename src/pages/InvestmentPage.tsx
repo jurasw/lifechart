@@ -16,6 +16,7 @@ import { fetchExchangeRates } from "@/services/exchangeRates"
 import { convertCurrency } from "@/services/exchangeRates"
 import type { Investment } from "@/types/investment"
 import type { ExchangeRates } from "@/services/exchangeRates"
+import { isPolishAsset } from "@/utils/currencyUtils"
 
 export const InvestmentPage = () => {
   const {
@@ -317,11 +318,11 @@ export const InvestmentPage = () => {
                   groupedArray = groupedArray.sort((a, b) => {
                     const getTotalValue = (group: typeof investments) => {
                       return group.reduce((sum, inv) => {
-                        const isPolishStock = inv.symbol.includes(".WA") || inv.symbol.includes(".PL")
+                        const isPolish = isPolishAsset(inv)
                         const purchaseCurrency = inv.purchaseCurrency || "USD"
                         let currentPriceInPurchaseCurrency = inv.purchasePrice
                         if (inv.currentPrice) {
-                          if (isPolishStock && purchaseCurrency === "PLN") {
+                          if (isPolish && purchaseCurrency === "PLN") {
                             currentPriceInPurchaseCurrency = inv.currentPrice
                           } else if (exchangeRates && purchaseCurrency !== "USD") {
                             currentPriceInPurchaseCurrency = convertCurrency(

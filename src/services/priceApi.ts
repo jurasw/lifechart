@@ -152,9 +152,16 @@ export const fetchCryptoPrice = async (symbol: string, signal?: AbortSignal): Pr
   }
 }
 
+export const fetchBondPrice = async (symbol: string, signal?: AbortSignal): Promise<PriceData | null> => {
+  return fetchStockPrice(symbol, signal)
+}
+
 export const fetchPrice = async (symbol: string, type: AssetType, signal?: AbortSignal): Promise<PriceData | null> => {
   if (type === "crypto") {
     return fetchCryptoPrice(symbol, signal)
+  }
+  if (type === "bond") {
+    return fetchBondPrice(symbol, signal)
   }
   return fetchStockPrice(symbol, signal)
 }
@@ -169,7 +176,7 @@ export const fetchMultiplePrices = async (
     return priceMap
   }
 
-  const stocks = symbols.filter(s => s.type === "stock").map(s => s.symbol)
+  const stocks = symbols.filter(s => s.type === "stock" || s.type === "bond").map(s => s.symbol)
   const cryptos = symbols.filter(s => s.type === "crypto").map(s => s.symbol.includes("-") ? s.symbol : `${s.symbol}-USD`)
 
   try {

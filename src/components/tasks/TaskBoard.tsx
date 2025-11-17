@@ -17,10 +17,19 @@ export const TaskBoard = ({ task, period, onPeriodChange }: TaskBoardProps) => {
   }
 
   const allBoardDates = getDatesForPeriod(period)
-  const filteredDates = allBoardDates.filter((date) => shouldShowDate(task, date))
-  
   const today = new Date()
   today.setHours(0, 0, 0, 0)
+  const todayTimestamp = today.getTime()
+  
+  const filteredDates = allBoardDates.filter((date) => {
+    if (period === "week") {
+      const normalizedDate = new Date(date)
+      normalizedDate.setHours(0, 0, 0, 0)
+      return normalizedDate.getTime() >= todayTimestamp && shouldShowDate(task, date)
+    }
+    return shouldShowDate(task, date)
+  })
+  
   const todayString = today.toDateString()
   
   const boardDatesSet = new Set<string>()

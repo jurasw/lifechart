@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Edit2, Trash2, TrendingUp, TrendingDown, ChevronDown, ChevronUp } from "lucide-react"
 import type { Investment } from "@/types/investment"
 import type { Currency } from "@/hooks/useCurrency"
-import { formatCurrency } from "@/utils/currencyUtils"
+import { formatCurrency, isPolishAsset } from "@/utils/currencyUtils"
 import { convertCurrency } from "@/services/exchangeRates"
 import type { ExchangeRates } from "@/services/exchangeRates"
 import { format } from "date-fns"
@@ -34,7 +34,7 @@ export const GroupedInvestmentCard = ({
   }
 
   const firstInvestment = investments[0]
-  const isPolishStock = firstInvestment.symbol.includes(".WA") || firstInvestment.symbol.includes(".PL")
+  const isPolish = isPolishAsset(firstInvestment)
 
   const aggregatedData = useMemo(() => {
     let totalVolume = 0
@@ -52,7 +52,7 @@ export const GroupedInvestmentCard = ({
       
       let currentPriceInPurchaseCurrency = investment.purchasePrice
       if (investment.currentPrice) {
-        if (isPolishStock && purchaseCurrency === "PLN") {
+        if (isPolish && purchaseCurrency === "PLN") {
           currentPriceInPurchaseCurrency = investment.currentPrice
         } else if (exchangeRates && purchaseCurrency !== "USD") {
           currentPriceInPurchaseCurrency = convertCurrency(
@@ -102,7 +102,7 @@ export const GroupedInvestmentCard = ({
       avgPurchasePrice,
       currentPrice,
     }
-  }, [investments, currency, exchangeRates, isPolishStock, convert])
+  }, [investments, currency, exchangeRates, isPolish, convert])
 
   const individualPurchases = useMemo(() => {
     return investments.map((investment) => {
@@ -110,7 +110,7 @@ export const GroupedInvestmentCard = ({
       
       let currentPriceInPurchaseCurrency = investment.purchasePrice
       if (investment.currentPrice) {
-        if (isPolishStock && purchaseCurrency === "PLN") {
+        if (isPolish && purchaseCurrency === "PLN") {
           currentPriceInPurchaseCurrency = investment.currentPrice
         } else if (exchangeRates && purchaseCurrency !== "USD") {
           currentPriceInPurchaseCurrency = convertCurrency(
@@ -147,7 +147,7 @@ export const GroupedInvestmentCard = ({
         profitPercent,
       }
     })
-  }, [investments, currency, exchangeRates, isPolishStock, convert])
+  }, [investments, currency, exchangeRates, isPolish, convert])
 
   const isProfit = aggregatedData.totalProfit >= 0
 

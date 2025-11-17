@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import type { Investment } from "@/types/investment"
 import type { Currency } from "@/hooks/useCurrency"
-import { formatCurrency } from "@/utils/currencyUtils"
+import { formatCurrency, isPolishAsset } from "@/utils/currencyUtils"
 import { convertCurrency } from "@/services/exchangeRates"
 import type { ExchangeRates } from "@/services/exchangeRates"
 
@@ -25,11 +25,11 @@ export const InvestmentChart = ({ investments, currency, exchangeRates }: Invest
     }, 0)
 
     const totalValue = investments.reduce((sum, inv) => {
-      const isPolishStock = inv.symbol.includes(".WA") || inv.symbol.includes(".PL")
+      const isPolish = isPolishAsset(inv)
       const purchaseCurrency = inv.purchaseCurrency || "USD"
       let currentPriceInPurchaseCurrency = inv.purchasePrice
       if (inv.currentPrice) {
-        if (isPolishStock && purchaseCurrency === "PLN") {
+        if (isPolish && purchaseCurrency === "PLN") {
           currentPriceInPurchaseCurrency = inv.currentPrice
         } else if (exchangeRates && purchaseCurrency !== "USD") {
           currentPriceInPurchaseCurrency = convertCurrency(
@@ -50,11 +50,11 @@ export const InvestmentChart = ({ investments, currency, exchangeRates }: Invest
 
     const byType = investments.reduce(
       (acc, inv) => {
-        const isPolishStock = inv.symbol.includes(".WA") || inv.symbol.includes(".PL")
+        const isPolish = isPolishAsset(inv)
         const purchaseCurrency = inv.purchaseCurrency || "USD"
         let currentPriceInPurchaseCurrency = inv.purchasePrice
         if (inv.currentPrice) {
-          if (isPolishStock && purchaseCurrency === "PLN") {
+          if (isPolish && purchaseCurrency === "PLN") {
             currentPriceInPurchaseCurrency = inv.currentPrice
           } else if (exchangeRates && purchaseCurrency !== "USD") {
             currentPriceInPurchaseCurrency = convertCurrency(

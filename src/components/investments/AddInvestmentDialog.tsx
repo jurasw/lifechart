@@ -191,6 +191,7 @@ export const AddInvestmentDialog = ({
               >
                 <option value="stock">Stock</option>
                 <option value="crypto">Crypto</option>
+                <option value="bond">Bond</option>
               </Select>
             </div>
 

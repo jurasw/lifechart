@@ -39,11 +39,7 @@ export const TasksPage = () => {
     : availablePeriods[0] || "week"
 
   const filteredTasks = useMemo(() => {
-    const hasFilters = selectedPeriod !== null || selectedTags.length > 0
-    
-    let result = hasFilters 
-      ? tasks.filter((task) => shouldShowTaskToday(task))
-      : tasks
+    let result = tasks.filter((task) => shouldShowTaskToday(task))
     
     if (selectedPeriod) {
       result = result.filter((task) => {
@@ -209,7 +205,7 @@ export const TasksPage = () => {
 
         <div className="w-full lg:w-auto lg:mt-[3.25rem]">
           <DailyProgress 
-            tasks={selectedPeriod || selectedTags.length > 0 ? filteredTasks : tasks} 
+            tasks={filteredTasks} 
             period={selectedPeriod || "all"} 
           />
         </div>

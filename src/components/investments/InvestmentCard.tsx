@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Edit2, Trash2, TrendingUp, TrendingDown } from "lucide-react"
 import type { Investment } from "@/types/investment"
 import type { Currency } from "@/hooks/useCurrency"
-import { formatCurrency } from "@/utils/currencyUtils"
+import { formatCurrency, isPolishAsset } from "@/utils/currencyUtils"
 import { convertCurrency } from "@/services/exchangeRates"
 import type { ExchangeRates } from "@/services/exchangeRates"
 
@@ -22,12 +22,12 @@ export const InvestmentCard = ({ investment, currency, exchangeRates, viewMode =
     return convertCurrency(amount, fromCurrency as any, currency, exchangeRates)
   }
 
-  const isPolishStock = investment.symbol.includes(".WA") || investment.symbol.includes(".PL")
+  const isPolish = isPolishAsset(investment)
   const purchaseCurrency = investment.purchaseCurrency || "USD"
   
   let currentPriceInPurchaseCurrency = investment.purchasePrice
   if (investment.currentPrice) {
-    if (isPolishStock && purchaseCurrency === "PLN") {
+    if (isPolish && purchaseCurrency === "PLN") {
       currentPriceInPurchaseCurrency = investment.currentPrice
     } else if (exchangeRates && purchaseCurrency !== "USD") {
       currentPriceInPurchaseCurrency = convertCurrency(
@@ -36,7 +36,7 @@ export const InvestmentCard = ({ investment, currency, exchangeRates, viewMode =
         purchaseCurrency as any,
         exchangeRates
       )
-    } else if (!isPolishStock) {
+    } else if (!isPolish) {
       currentPriceInPurchaseCurrency = investment.currentPrice
     } else {
       currentPriceInPurchaseCurrency = investment.currentPrice

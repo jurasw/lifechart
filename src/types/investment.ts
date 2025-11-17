@@ -1,4 +1,4 @@
-export type AssetType = "stock" | "crypto"
+export type AssetType = "stock" | "crypto" | "bond"
 export type Currency = "USD" | "EUR" | "PLN"
 
 export interface Investment {
