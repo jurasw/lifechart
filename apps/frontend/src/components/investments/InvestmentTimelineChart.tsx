@@ -342,12 +342,10 @@ export const InvestmentTimelineChart = ({
               }
               totalValue += investment.volume * convert(priceInPurchaseCurrency, purchaseCurrency)
             } else {
-              const isPolish = isPolishAsset(investment)
               const purchaseCurrency = investment.purchaseCurrency || "USD"
               totalValue += investment.volume * convert(investment.purchasePrice, purchaseCurrency)
             }
           } else {
-            const isPolish = isPolishAsset(investment)
             const purchaseCurrency = investment.purchaseCurrency || "USD"
             totalValue += investment.volume * convert(investment.purchasePrice, purchaseCurrency)
           }
@@ -370,7 +368,6 @@ export const InvestmentTimelineChart = ({
           purchaseDate.setHours(0, 0, 0, 0)
           
           if (earliestPurchaseDate.getTime() === purchaseDate.getTime()) {
-            const isPolish = isPolishAsset(investment)
             const purchaseCurrency = investment.purchaseCurrency || "USD"
             initialValue += investment.volume * convert(investment.purchasePrice, purchaseCurrency)
           }

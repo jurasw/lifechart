@@ -138,13 +138,12 @@ export const DietChart = ({ dishes }: DietChartProps) => {
 
     const rect = svgRef.current.getBoundingClientRect()
     const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
 
     // Find closest data point
     let closestIndex = 0
     let minDistance = Infinity
 
-    chartData.forEach((point, index) => {
+    chartData.forEach((_point, index) => {
       const pointX = getX(index)
       const distance = Math.abs(x - pointX)
       if (distance < minDistance) {

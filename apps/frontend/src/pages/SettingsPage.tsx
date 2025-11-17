@@ -5,14 +5,11 @@ import { Download, Upload, Trash2 } from "lucide-react"
 import { useTasks } from "@/hooks/useTasks"
 import { useInvestments } from "@/hooks/useInvestments"
 import { useDiet } from "@/hooks/useDiet"
-import type { Task } from "@/types/task"
-import type { Investment } from "@/types/investment"
-import type { DailyDish } from "@/types/diet"
 
 export const SettingsPage = () => {
-  const { tasks, setTasks, setSelectedTaskId, setEditingTaskId } = useTasks()
-  const { investments, setInvestments } = useInvestments()
-  const { dishes, setDishes } = useDiet()
+  const { setTasks, setSelectedTaskId, setEditingTaskId } = useTasks()
+  const { setInvestments } = useInvestments()
+  const { setDishes } = useDiet()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [showClearConfirm, setShowClearConfirm] = useState(false)
   const [showImportConfirm, setShowImportConfirm] = useState(false)
