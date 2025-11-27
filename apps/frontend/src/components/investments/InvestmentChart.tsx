@@ -24,29 +24,32 @@ export const InvestmentChart = ({ investments, currency, exchangeRates }: Invest
       return sum + inv.volume * convert(inv.purchasePrice, purchaseCurrency)
     }, 0)
 
-    const totalValue = investments.reduce((sum, inv) => {
+    const investmentsWithPrice = investments.filter(inv => inv.currentPrice)
+    
+    const totalValue = investmentsWithPrice.reduce((sum, inv) => {
       const isPolish = isPolishAsset(inv)
       const purchaseCurrency = inv.purchaseCurrency || "USD"
-      let currentPriceInPurchaseCurrency = inv.purchasePrice
-      if (inv.currentPrice) {
-        if (isPolish && purchaseCurrency === "PLN") {
-          currentPriceInPurchaseCurrency = inv.currentPrice
-        } else if (exchangeRates && purchaseCurrency !== "USD") {
-          currentPriceInPurchaseCurrency = convertCurrency(
-            inv.currentPrice,
-            "USD",
-            purchaseCurrency as any,
-            exchangeRates
-          )
-        } else {
-          currentPriceInPurchaseCurrency = inv.currentPrice
-        }
+      let currentPriceInPurchaseCurrency = inv.currentPrice!
+      if (isPolish && purchaseCurrency === "PLN") {
+        currentPriceInPurchaseCurrency = inv.currentPrice!
+      } else if (exchangeRates && purchaseCurrency !== "USD") {
+        currentPriceInPurchaseCurrency = convertCurrency(
+          inv.currentPrice!,
+          "USD",
+          purchaseCurrency as any,
+          exchangeRates
+        )
       }
       return sum + inv.volume * convert(currentPriceInPurchaseCurrency, purchaseCurrency)
     }, 0)
 
-    const profit = totalValue - totalCost
-    const profitPercent = totalCost > 0 ? (profit / totalCost) * 100 : 0
+    const totalCostForProfit = investmentsWithPrice.reduce((sum, inv) => {
+      const purchaseCurrency = inv.purchaseCurrency || "USD"
+      return sum + inv.volume * convert(inv.purchasePrice, purchaseCurrency)
+    }, 0)
+
+    const profit = totalValue - totalCostForProfit
+    const profitPercent = totalCostForProfit > 0 ? (profit / totalCostForProfit) * 100 : 0
 
     const byType = investments.reduce(
       (acc, inv) => {

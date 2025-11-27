@@ -1,9 +1,9 @@
-import { useLocalStorage } from "./useLocalStorage"
+import { useState } from "react"
 
 export type Currency = "USD" | "EUR" | "PLN"
 
 export const useCurrency = () => {
-  const [currency, setCurrency] = useLocalStorage<Currency>("currency", "USD")
+  const [currency, setCurrency] = useState<Currency>("PLN")
 
   return {
     currency,

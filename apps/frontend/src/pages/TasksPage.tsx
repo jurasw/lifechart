@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
-import { useTasks } from "@/hooks/useTasks"
+import { useTasksQuery } from "@/hooks/useTasksQuery"
 import { EmptyState } from "@/components/tasks/EmptyState"
 import { AddTaskDialog } from "@/components/tasks/AddTaskDialog"
 import { TaskCard } from "@/components/tasks/TaskCard"
@@ -15,15 +15,16 @@ import { getAvailablePeriods, shouldShowTaskToday } from "@/utils/dateUtils"
 export const TasksPage = () => {
   const {
     tasks,
-    setTasks,
-    editingTaskId,
-    setEditingTaskId,
-    selectedTaskId,
-    setSelectedTaskId,
-    handleToggleComplete,
-    handleDelete,
-    handleToggleDate,
-  } = useTasks()
+    isLoading,
+    createTask,
+    updateTask,
+    deleteTask,
+    toggleComplete,
+    toggleDate,
+  } = useTasksQuery()
+
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null)
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [boardPeriod, setBoardPeriod] = useState<"week" | "month" | "year">("week")
@@ -39,7 +40,7 @@ export const TasksPage = () => {
     : availablePeriods[0] || "week"
 
   const filteredTasks = useMemo(() => {
-    let result = tasks.filter((task) => shouldShowTaskToday(task))
+    let result = tasks
     
     if (selectedPeriod) {
       result = result.filter((task) => {
@@ -75,7 +76,7 @@ export const TasksPage = () => {
     if (selectedTaskId && !filteredTasks.find((t) => t.id === selectedTaskId)) {
       setSelectedTaskId(null)
     }
-  }, [filteredTasks, selectedTaskId, setSelectedTaskId])
+  }, [filteredTasks, selectedTaskId])
 
   const handleTagToggle = (tag: string) => {
     setSelectedTags((prev) =>
@@ -88,28 +89,32 @@ export const TasksPage = () => {
     setSelectedPeriod(null)
   }
 
-  const handleTaskSubmit = (taskData: Omit<Task, "id" | "createdAt" | "completed" | "completedDates">) => {
+  const handleTaskSubmit = async (taskData: Omit<Task, "id" | "createdAt" | "completed" | "completedDates">) => {
     if (editingTaskId) {
-      setTasks(
-        tasks.map((task) =>
-          task.id === editingTaskId
-            ? {
-                ...task,
-                ...taskData,
-              }
-            : task
-        )
-      )
+      await updateTask({ id: editingTaskId, task: taskData })
       setEditingTaskId(null)
     } else {
-      const newTask: Task = {
+      await createTask({
         ...taskData,
-        id: Date.now().toString(),
         completed: false,
         createdAt: Date.now(),
-      }
-      setTasks([...tasks, newTask])
+      })
     }
+  }
+
+  const handleToggleComplete = async (id: string) => {
+    await toggleComplete(id)
+  }
+
+  const handleDelete = async (id: string) => {
+    await deleteTask(id)
+  }
+
+  const handleToggleDate = async (id: string, date: Date) => {
+    const normalizedDate = new Date(date)
+    normalizedDate.setHours(0, 0, 0, 0)
+    const dateTimestamp = normalizedDate.getTime()
+    await toggleDate({ id, date: dateTimestamp })
   }
 
   const handleEdit = (task: Task) => {
@@ -131,6 +136,14 @@ export const TasksPage = () => {
         }
       }
     }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-muted-foreground">Loading tasks...</div>
+      </div>
+    )
   }
 
   if (tasks.length === 0) {

@@ -43,54 +43,43 @@ export const GroupedInvestmentCard = ({
     let totalProfit = 0
     let weightedPurchasePrice = 0
     let weightedCurrentPrice = 0
-    // Calculate profit percentage in purchase currencies to avoid rounding errors
     let totalCostForPercent = 0
     let totalProfitForPercent = 0
 
     investments.forEach((investment) => {
-      const purchaseCurrency = investment.purchaseCurrency || "USD"
+      const purchaseCurrency = investment.purchaseCurrency || "PLN"
+      const hasCurrentPrice = !!investment.currentPrice && investment.currentPrice > 0
+      const profit = investment.profit ?? 0
+      const volume = investment.volume || 0
+      const purchasePrice = investment.purchasePrice || 0
       
-      let currentPriceInPurchaseCurrency = investment.purchasePrice
-      if (investment.currentPrice) {
-        if (isPolish && purchaseCurrency === "PLN") {
-          currentPriceInPurchaseCurrency = investment.currentPrice
-        } else if (exchangeRates && purchaseCurrency !== "USD") {
-          currentPriceInPurchaseCurrency = convertCurrency(
-            investment.currentPrice,
-            "USD",
-            purchaseCurrency as any,
-            exchangeRates
-          )
-        } else {
-          currentPriceInPurchaseCurrency = investment.currentPrice
-        }
-      }
+      const costInPurchaseCurrency = volume * purchasePrice
+      const valueInPurchaseCurrency = hasCurrentPrice ? costInPurchaseCurrency + profit : costInPurchaseCurrency
 
-      const purchasePriceConverted = convert(investment.purchasePrice, purchaseCurrency)
-      const currentPriceConverted = convert(currentPriceInPurchaseCurrency, purchaseCurrency)
-      const costInPurchaseCurrency = investment.volume * investment.purchasePrice
-      const valueInPurchaseCurrency = investment.volume * currentPriceInPurchaseCurrency
-      const profitInPurchaseCurrency = valueInPurchaseCurrency - costInPurchaseCurrency
-
-      totalVolume += investment.volume
+      totalVolume += volume
       totalCost += convert(costInPurchaseCurrency, purchaseCurrency)
-      totalValue += convert(valueInPurchaseCurrency, purchaseCurrency)
-      totalProfit += convert(profitInPurchaseCurrency, purchaseCurrency)
+      if (hasCurrentPrice) {
+        totalValue += convert(valueInPurchaseCurrency, purchaseCurrency)
+        totalProfit += convert(profit, purchaseCurrency)
+        totalCostForPercent += convert(costInPurchaseCurrency, purchaseCurrency)
+        totalProfitForPercent += convert(profit, purchaseCurrency)
+      } else {
+        totalValue += convert(costInPurchaseCurrency, purchaseCurrency)
+      }
       
-      // For percentage calculation, convert to display currency but keep full precision
-      totalCostForPercent += convert(costInPurchaseCurrency, purchaseCurrency)
-      totalProfitForPercent += convert(profitInPurchaseCurrency, purchaseCurrency)
-      
-      if (investment.volume > 0) {
-        weightedPurchasePrice += purchasePriceConverted * investment.volume
-        weightedCurrentPrice += currentPriceConverted * investment.volume
+      if (volume > 0) {
+        const purchasePriceConverted = convert(purchasePrice, purchaseCurrency)
+        const currentPriceConverted = hasCurrentPrice && investment.currentPrice ? convert(investment.currentPrice, purchaseCurrency === "PLN" && isPolish ? "PLN" : "USD") : purchasePriceConverted
+        weightedPurchasePrice += purchasePriceConverted * volume
+        if (hasCurrentPrice) {
+          weightedCurrentPrice += currentPriceConverted * volume
+        }
       }
     })
 
     const avgPurchasePrice = totalVolume > 0 ? weightedPurchasePrice / totalVolume : 0
     const currentPrice = totalVolume > 0 ? weightedCurrentPrice / totalVolume : (investments[0]?.currentPrice ? convert(investments[0].currentPrice, investments[0].purchaseCurrency || "USD") : 0)
     
-    // Calculate profit percentage using full precision values
     const profitPercent = totalCostForPercent > 0 ? (totalProfitForPercent / totalCostForPercent) * 100 : 0
 
     return {
@@ -106,41 +95,28 @@ export const GroupedInvestmentCard = ({
 
   const individualPurchases = useMemo(() => {
     return investments.map((investment) => {
-      const purchaseCurrency = investment.purchaseCurrency || "USD"
+      const purchaseCurrency = investment.purchaseCurrency || "PLN"
       
-      let currentPriceInPurchaseCurrency = investment.purchasePrice
-      if (investment.currentPrice) {
-        if (isPolish && purchaseCurrency === "PLN") {
-          currentPriceInPurchaseCurrency = investment.currentPrice
-        } else if (exchangeRates && purchaseCurrency !== "USD") {
-          currentPriceInPurchaseCurrency = convertCurrency(
-            investment.currentPrice,
-            "USD",
-            purchaseCurrency as any,
-            exchangeRates
-          )
-        } else {
-          currentPriceInPurchaseCurrency = investment.currentPrice
-        }
-      }
+      const hasCurrentPrice = !!investment.currentPrice && investment.currentPrice > 0
+      const profit = investment.profit ?? 0
+      const profitPercent = investment.profitPercent ?? 0
+      const volume = investment.volume || 0
+      const purchasePrice = investment.purchasePrice || 0
 
-      const costInPurchaseCurrency = investment.volume * investment.purchasePrice
-      const valueInPurchaseCurrency = investment.volume * currentPriceInPurchaseCurrency
-      const profitInPurchaseCurrency = valueInPurchaseCurrency - costInPurchaseCurrency
+      const costInPurchaseCurrency = volume * purchasePrice
+      const valueInPurchaseCurrency = hasCurrentPrice ? costInPurchaseCurrency + profit : costInPurchaseCurrency
 
       const costConverted = convert(costInPurchaseCurrency, purchaseCurrency)
-      const profitConverted = convert(profitInPurchaseCurrency, purchaseCurrency)
+      const profitConverted = convert(profit, purchaseCurrency)
 
-      const profitPercent = costConverted > 0
-        ? (profitConverted / costConverted) * 100
-        : 0
-
+      const currentPriceInPurchaseCurrency = hasCurrentPrice && investment.currentPrice ? investment.currentPrice : purchasePrice
+      
       return {
         investment,
         purchaseDate: new Date(investment.purchaseDate),
-        volume: investment.volume,
-        purchasePrice: convert(investment.purchasePrice, purchaseCurrency),
-        currentPrice: convert(currentPriceInPurchaseCurrency, purchaseCurrency),
+        volume,
+        purchasePrice: convert(purchasePrice, purchaseCurrency),
+        currentPrice: hasCurrentPrice ? convert(currentPriceInPurchaseCurrency, purchaseCurrency === "PLN" && isPolish ? "PLN" : "USD") : convert(purchasePrice, purchaseCurrency),
         cost: costConverted,
         value: convert(valueInPurchaseCurrency, purchaseCurrency),
         profit: profitConverted,
@@ -155,8 +131,8 @@ export const GroupedInvestmentCard = ({
     return (
       <Card className="border-foreground/30">
         <CardContent className="p-3">
-          <div className="grid grid-cols-[1fr_auto] gap-4 items-center">
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
               <div className="min-w-0 flex-shrink-0">
                 <h3 className="font-semibold text-sm">
                   {firstInvestment.symbol}
@@ -172,8 +148,8 @@ export const GroupedInvestmentCard = ({
                 {firstInvestment.type}
               </span>
             </div>
-            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
-              <div className="text-right hidden sm:block w-24">
+            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0 flex-wrap">
+              <div className="text-right hidden md:block w-24">
                 <div className="text-xs text-muted-foreground">Volume</div>
                 <div className="text-sm font-medium">
                   {aggregatedData.totalVolume > 0 
@@ -181,12 +157,12 @@ export const GroupedInvestmentCard = ({
                     : "0"}
                 </div>
               </div>
-              <div className="text-right w-28 sm:w-36">
+              <div className="text-right w-24 sm:w-28 md:w-36">
                 <div className="text-xs text-muted-foreground">Current Value</div>
                 <div className="text-sm font-semibold">{formatCurrency(aggregatedData.totalValue, currency)}</div>
               </div>
-              <div className="text-right flex items-center gap-2">
-                <div className="w-36 sm:w-44">
+              <div className="text-right flex items-center gap-2 min-w-0">
+                <div className="w-28 sm:w-36 md:w-44 min-w-0">
                   <div className="text-xs text-muted-foreground">Profit/Loss</div>
                   <div className={`text-sm font-semibold flex items-center justify-end gap-1 ${isProfit ? "text-green-500" : "text-red-500"}`}>
                     {isProfit ? (

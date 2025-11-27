@@ -15,10 +15,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: any) {
     if (!payload || !payload.sub) {
-      console.error('JWT validation failed: missing payload or sub', payload);
       throw new UnauthorizedException('Invalid token');
     }
-    console.log('JWT validated successfully for user:', payload.sub);
     return { userId: payload.sub, email: payload.email };
   }
 }

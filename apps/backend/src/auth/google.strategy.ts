@@ -11,11 +11,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const clientID = configService.get<string>('GOOGLE_CLIENT_ID');
     const clientSecret = configService.get<string>('GOOGLE_CLIENT_SECRET');
     
-    console.log('Google OAuth Config:');
-    console.log('  Client ID:', clientID ? `${clientID.substring(0, 20)}...` : 'MISSING');
-    console.log('  Client Secret:', clientSecret ? 'SET' : 'MISSING');
-    console.log('  Callback URL:', callbackURL);
-    
     if (!clientID || !clientSecret) {
       throw new Error('Google OAuth credentials are missing. Check your .env file.');
     }

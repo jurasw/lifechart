@@ -34,7 +34,6 @@ export const fetchExchangeRates = async (): Promise<ExchangeRates | null> => {
     }
     return null
   } catch (error) {
-    console.error("Error fetching exchange rates:", error)
     return cachedRates || {
       USD: 1,
       EUR: 0.92,

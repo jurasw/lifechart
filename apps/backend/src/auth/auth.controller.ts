@@ -10,7 +10,6 @@ export class AuthController {
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth() {
-    // Initiates Google OAuth flow
   }
 
   @Get('google/callback')
@@ -41,35 +40,23 @@ export class AuthController {
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   async getProfile(@Req() req: Request) {
-    try {
-      const userFromToken = req.user as any;
-      console.log('Request user from token:', userFromToken);
-      
-      const userId = userFromToken?.userId;
-      if (!userId) {
-        console.error('User ID not found in token. Token data:', userFromToken);
-        throw new Error('User ID not found in token');
-      }
-      
-      const user = await this.authService.findUserById(userId);
-      if (!user) {
-        console.error('User not found in database for ID:', userId);
-        throw new Error('User not found');
-      }
-      
-      const userData = {
-        id: user._id.toString(),
-        email: user.email,
-        name: user.name,
-        picture: user.picture,
-      };
-      
-      console.log('Returning user data:', { ...userData, picture: userData.picture ? 'SET' : 'NOT SET' });
-      return userData;
-    } catch (error) {
-      console.error('Error in /auth/me:', error);
-      throw error;
+    const userFromToken = req.user as any;
+    const userId = userFromToken?.userId;
+    if (!userId) {
+      throw new Error('User ID not found in token');
     }
+    
+    const user = await this.authService.findUserById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    
+    return {
+      id: user._id.toString(),
+      email: user.email,
+      name: user.name,
+      picture: user.picture,
+    };
   }
 }
 

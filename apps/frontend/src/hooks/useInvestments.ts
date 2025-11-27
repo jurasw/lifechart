@@ -1,9 +1,8 @@
 import { useState, useCallback, useRef } from "react"
-import { useLocalStorage } from "./useLocalStorage"
 import type { Investment } from "@/types/investment"
 
 export const useInvestments = () => {
-  const [investments, setInvestments] = useLocalStorage<Investment[]>("investments", [])
+  const [investments, setInvestments] = useState<Investment[]>([])
   const [editingInvestmentId, setEditingInvestmentId] = useState<string | null>(null)
   const investmentsRef = useRef(investments)
   investmentsRef.current = investments

@@ -1,10 +1,20 @@
 import { StrictMode, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import 'react-day-picker/dist/style.css'
 import './index.css'
 import App from './App.tsx'
 import { useAuthStore } from './store/authStore'
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+})
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '893235604028-pd4gv7fd15an7b9g3n0dqs4cet6ofqou.apps.googleusercontent.com'
 
@@ -13,23 +23,15 @@ function AppWithAuth() {
 
   useEffect(() => {
     const { accessToken, user, isAuthenticated } = useAuthStore.getState()
-    const storedToken = localStorage.getItem('access_token')
     
-    // If we have a persisted user and token, restore the state
     if (user && accessToken && isAuthenticated) {
-      console.log('Restoring user from persisted state:', user.email)
       useAuthStore.setState({ loading: false })
       return
     }
     
-    // If we have a token but no user, fetch the user
-    if ((accessToken || storedToken) && !user) {
-      const token = accessToken || storedToken
-      if (token) {
-        setAccessToken(token)
-        useAuthStore.getState().fetchUser()
-      }
-    } else if (!accessToken && !storedToken) {
+    if (accessToken && !user) {
+      useAuthStore.getState().fetchUser()
+    } else if (!accessToken) {
       useAuthStore.setState({ loading: false })
     }
   }, [])
@@ -40,12 +42,10 @@ function AppWithAuth() {
       const frontendUrl = window.location.origin
       
       if (event.origin !== apiUrl && event.origin !== frontendUrl) {
-        console.warn('Ignoring message from unauthorized origin:', event.origin)
         return
       }
       
       if (event.data && event.data.type === 'GOOGLE_AUTH_SUCCESS') {
-        console.log('Received Google auth success:', event.data)
         const { token, user } = event.data
         
         if (token && user) {
@@ -56,9 +56,6 @@ function AppWithAuth() {
             loading: false,
             accessToken: token 
           })
-          console.log('User logged in successfully:', user.email)
-        } else {
-          console.error('Missing token or user in auth success message')
         }
       }
     }
@@ -72,8 +69,10 @@ function AppWithAuth() {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <AppWithAuth />
-    </GoogleOAuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+        <AppWithAuth />
+      </GoogleOAuthProvider>
+    </QueryClientProvider>
   </StrictMode>,
 )

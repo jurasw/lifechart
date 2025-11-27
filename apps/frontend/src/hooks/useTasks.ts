@@ -1,9 +1,8 @@
 import { useState } from "react"
-import { useLocalStorage } from "./useLocalStorage"
 import type { Task } from "@/types/task"
 
 export const useTasks = () => {
-  const [tasks, setTasks] = useLocalStorage<Task[]>("tasks", [])
+  const [tasks, setTasks] = useState<Task[]>([])
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null)
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
 

@@ -68,7 +68,7 @@ function Calendar({
           defaultClassNames.dropdowns
         ),
         dropdown_root: cn(
-          "has-focus:border-white border-input shadow-xs has-focus:ring-white/50 has-focus:ring-[3px] relative rounded-md border",
+          "has-focus:border-foreground border-input shadow-xs has-focus:ring-foreground/50 has-focus:ring-[3px] relative rounded-md border",
           defaultClassNames.dropdown_root
         ),
         dropdown: cn(
@@ -199,7 +199,7 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={cn(
-        "data-[selected-single=true]:bg-accent data-[selected-single=true]:text-accent-foreground data-[selected-single=true]:border data-[selected-single=true]:border-white data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[selected=true]:border data-[selected=true]:border-white aria-selected:bg-accent aria-selected:text-accent-foreground aria-selected:border aria-selected:border-white data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-accent data-[range-start=true]:text-accent-foreground data-[range-start=true]:border data-[range-start=true]:border-white data-[range-end=true]:bg-accent data-[range-end=true]:text-accent-foreground data-[range-end=true]:border data-[range-end=true]:border-white group-data-[focused=true]/day:border-white group-data-[focused=true]/day:ring-white/50 flex aspect-square h-auto w-full min-w-[--cell-size] flex-col gap-1 font-normal leading-none data-[range-end=true]:rounded-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] [&>span]:text-xs [&>span]:opacity-70",
+        "flex aspect-square h-auto w-full min-w-[--cell-size] flex-col gap-1 font-normal leading-none data-[selected-single=true]:bg-accent data-[selected-single=true]:text-accent-foreground data-[selected-single=true]:border data-[selected-single=true]:border-foreground data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[selected=true]:border data-[selected=true]:border-foreground aria-selected:bg-accent aria-selected:text-accent-foreground aria-selected:border aria-selected:border-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-accent data-[range-start=true]:text-accent-foreground data-[range-start=true]:border data-[range-start=true]:border-foreground data-[range-end=true]:bg-accent data-[range-end=true]:text-accent-foreground data-[range-end=true]:border data-[range-end=true]:border-foreground data-[range-end=true]:rounded-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md group-data-[focused=true]/day:border group-data-[focused=true]/day:border-foreground group-data-[focused=true]/day:ring-foreground/50 group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] [&>span]:text-xs [&>span]:opacity-70",
         defaultClassNames.day,
         className
       )}

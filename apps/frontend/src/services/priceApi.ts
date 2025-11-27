@@ -116,7 +116,6 @@ export const fetchStockPrice = async (symbol: string, signal?: AbortSignal): Pro
     if (error.message === "Request aborted") {
       return null
     }
-    console.error(`Error fetching price for ${symbol}:`, error)
     return null
   }
 }
@@ -147,7 +146,6 @@ export const fetchCryptoPrice = async (symbol: string, signal?: AbortSignal): Pr
     if (error.message === "Request aborted") {
       return null
     }
-    console.error(`Error fetching crypto price for ${symbol}:`, error)
     return null
   }
 }
@@ -244,7 +242,6 @@ export const fetchMultiplePrices = async (
     }
   } catch (error: unknown) {
     if (error instanceof Error && error.message !== "Request aborted") {
-      console.error("Error fetching bulk prices:", error)
     }
   }
   

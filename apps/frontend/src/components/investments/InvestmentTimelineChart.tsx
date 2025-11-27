@@ -29,7 +29,9 @@ export const InvestmentTimelineChart = ({
   const [historicalData, setHistoricalData] = useState<Map<string, HistoricalPricePoint[]>>(new Map())
   const [isLoading, setIsLoading] = useState(false)
   const [hoveredPoint, setHoveredPoint] = useState<{ date: Date; value: number; x: number; y: number } | null>(null)
+  const [chartWidth, setChartWidth] = useState(400)
   const svgRef = useRef<SVGSVGElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const cacheRef = useRef<Map<string, { data: HistoricalPricePoint[]; timestamp: number; period: Period; granulation: Granulation }>>(new Map())
 
   const convert = (amount: number, fromCurrency: string = "USD") => {
@@ -182,7 +184,6 @@ export const InvestmentTimelineChart = ({
         }
       } catch (error: unknown) {
         if (error instanceof Error && error.message !== "Request aborted") {
-          console.error("Error loading historical data:", error)
         }
       } finally {
         if (!signal.aborted) {
@@ -213,25 +214,23 @@ export const InvestmentTimelineChart = ({
     
     let totalValue = 0
     investments.forEach((investment) => {
+      if (!investment.currentPrice) return
+      
       const purchaseDate = new Date(investment.purchaseDate)
       purchaseDate.setHours(0, 0, 0, 0)
       if (today >= purchaseDate) {
         const isPolishStock = investment.symbol.includes(".WA") || investment.symbol.includes(".PL")
         const purchaseCurrency = investment.purchaseCurrency || "USD"
-        let priceInPurchaseCurrency = investment.purchasePrice
-        if (investment.currentPrice) {
-          if (isPolishStock && purchaseCurrency === "PLN") {
-            priceInPurchaseCurrency = investment.currentPrice
-          } else if (exchangeRates && purchaseCurrency !== "USD") {
-            priceInPurchaseCurrency = convertCurrency(
-              investment.currentPrice,
-              "USD",
-              purchaseCurrency as any,
-              exchangeRates
-            )
-          } else {
-            priceInPurchaseCurrency = investment.currentPrice
-          }
+        let priceInPurchaseCurrency = investment.currentPrice
+        if (isPolishStock && purchaseCurrency === "PLN") {
+          priceInPurchaseCurrency = investment.currentPrice
+        } else if (exchangeRates && purchaseCurrency !== "USD") {
+          priceInPurchaseCurrency = convertCurrency(
+            investment.currentPrice,
+            "USD",
+            purchaseCurrency as any,
+            exchangeRates
+          )
         }
         totalValue += investment.volume * convert(priceInPurchaseCurrency, purchaseCurrency)
       }
@@ -406,7 +405,18 @@ export const InvestmentTimelineChart = ({
     return lastValue >= firstValue
   }, [chartData])
 
-  const chartWidth = 400
+  useEffect(() => {
+    const updateChartWidth = () => {
+      if (containerRef.current) {
+        const width = containerRef.current.offsetWidth
+        setChartWidth(Math.max(300, width - 32))
+      }
+    }
+    updateChartWidth()
+    window.addEventListener('resize', updateChartWidth)
+    return () => window.removeEventListener('resize', updateChartWidth)
+  }, [])
+
   const chartHeight = 200
   const padding = 40
 
@@ -548,13 +558,14 @@ export const InvestmentTimelineChart = ({
           </div>
         ) : chartData.length > 0 ? (
           <div className="space-y-2">
-            <div className="flex items-center justify-center relative" style={{ height: `${chartHeight}px` }}>
+            <div ref={containerRef} className="flex items-center justify-center relative w-full" style={{ height: `${chartHeight}px` }}>
               <svg
                 ref={svgRef}
-                width={chartWidth}
+                width="100%"
                 height={chartHeight}
                 className="overflow-visible cursor-crosshair"
                 viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+                preserveAspectRatio="xMidYMid meet"
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
               >

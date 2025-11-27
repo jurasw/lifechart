@@ -57,7 +57,6 @@ export const AddDishDialog = ({ open, onOpenChange, onSubmit, editingDish }: Add
   const [showMicronutrients, setShowMicronutrients] = useState(false)
   const [micronutrients, setMicronutrients] = useState<Micronutrients>({})
   
-  // AI description parsing states
   const [dishDescription, setDishDescription] = useState("")
   const [isParsingDescription, setIsParsingDescription] = useState(false)
 
@@ -119,7 +118,6 @@ export const AddDishDialog = ({ open, onOpenChange, onSubmit, editingDish }: Add
     })
   }
 
-  // Debounced AI parsing of dish description
   useEffect(() => {
     if (!dishDescription || dishDescription.length < 3) {
       return
@@ -146,7 +144,6 @@ export const AddDishDialog = ({ open, onOpenChange, onSubmit, editingDish }: Add
           }
         }
       } catch (error) {
-        console.error("Error parsing dish description:", error)
       } finally {
         setIsParsingDescription(false)
       }

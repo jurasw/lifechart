@@ -1,9 +1,14 @@
 import { Link, useLocation } from "react-router-dom"
-import { CheckSquare, Dumbbell, Apple, TrendingUp, Settings, LogOut, LogIn } from "lucide-react"
+import { CheckSquare, Dumbbell, Apple, TrendingUp, Settings, LogOut, LogIn, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuthStore } from "@/store/authStore"
 
-export const Sidebar = () => {
+interface SidebarProps {
+  isOpen: boolean
+  onClose: () => void
+}
+
+export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const location = useLocation()
   const user = useAuthStore((state) => state.user)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
@@ -17,11 +22,34 @@ export const Sidebar = () => {
     { path: "/investment", label: "Investment", icon: TrendingUp },
   ]
 
+  const handleLinkClick = () => {
+    onClose()
+  }
+
   return (
-    <div className="w-64 bg-popover border-r border-border h-screen fixed left-0 top-0 flex flex-col">
-      <div className="p-6 border-b border-border">
-        <h1 className="text-lg font-semibold text-foreground">LifeChart</h1>
-      </div>
+    <>
+      {isOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={onClose}
+        />
+      )}
+      
+      <div className={cn(
+        "w-64 bg-popover border-r border-border h-screen fixed left-0 top-0 flex flex-col z-50 transition-transform duration-300 pt-16",
+        "lg:translate-x-0",
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      )}>
+        <div className="p-6 border-b border-border flex items-center justify-between">
+          <h1 className="text-lg font-semibold text-foreground">LifeChart</h1>
+          <button
+            onClick={onClose}
+            className="lg:hidden p-1 hover:bg-accent rounded-md transition-colors"
+            aria-label="Close menu"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
       <nav className="flex-1 p-4 space-y-1">
         {menuItems.map((item) => {
           const Icon = item.icon
@@ -30,6 +58,7 @@ export const Sidebar = () => {
             <Link
               key={item.path}
               to={item.path}
+              onClick={handleLinkClick}
               className={cn(
                 "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
                 isActive
@@ -56,6 +85,7 @@ export const Sidebar = () => {
           <>
             <Link
               to="/settings"
+              onClick={handleLinkClick}
               className={cn(
                 "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
                 location.pathname === "/settings"
@@ -67,31 +97,20 @@ export const Sidebar = () => {
               Settings
             </Link>
             <button
-              onClick={logout}
+              onClick={() => {
+                logout()
+                handleLinkClick()
+              }}
               className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors text-muted-foreground hover:bg-accent/50 hover:text-foreground"
             >
               <LogOut className="h-4 w-4" />
               Logout
             </button>
-            {user && (
-              <div className="mt-3 pt-3 border-t border-border flex items-center gap-3">
-                {user.picture && (
-                  <img
-                    src={user.picture}
-                    alt={user.name}
-                    className="w-10 h-10 rounded-full"
-                  />
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-foreground truncate">{user.name}</p>
-                  <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-                </div>
-              </div>
-            )}
           </>
         )}
       </div>
     </div>
+    </>
   )
 }
 

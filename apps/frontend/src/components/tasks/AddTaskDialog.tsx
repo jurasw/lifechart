@@ -27,7 +27,7 @@ const daysOfWeek: { value: DayOfWeek; label: string }[] = [
 interface AddTaskDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSubmit: (task: Omit<Task, "id" | "createdAt" | "completed" | "completedDates">) => void
+  onSubmit: (task: Omit<Task, "id" | "createdAt" | "completed" | "completedDates">) => Promise<void>
   editingTask: Task | null
 }
 
@@ -44,6 +44,7 @@ export const AddTaskDialog = ({
   const [selectedDays, setSelectedDays] = useState<DayOfWeek[]>([])
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState("")
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (editingTask) {
@@ -62,6 +63,7 @@ export const AddTaskDialog = ({
       setTags([])
     }
     setTagInput("")
+    setError(null)
   }, [editingTask, open])
 
   const toggleDay = (day: DayOfWeek) => {
@@ -89,30 +91,41 @@ export const AddTaskDialog = ({
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!title.trim()) return
 
-    onSubmit({
-      title: title.trim(),
-      description: description.trim(),
-      isRepetitive,
-      period: isRepetitive ? period : undefined,
-      selectedDays:
-        isRepetitive && (period === "weekly" || period === "yearly")
-          ? selectedDays
-          : undefined,
-      tags: tags.length > 0 ? tags : undefined,
-    })
+    setError(null)
+    try {
+      await onSubmit({
+        title: title.trim(),
+        description: description.trim() || '',
+        isRepetitive,
+        period: isRepetitive ? period : undefined,
+        selectedDays:
+          isRepetitive && (period === "weekly" || period === "yearly")
+            ? selectedDays
+            : undefined,
+        tags: tags.length > 0 ? tags : undefined,
+      })
 
-    setTitle("")
-    setDescription("")
-    setIsRepetitive(false)
-    setPeriod("daily")
-    setSelectedDays([])
-    setTags([])
-    setTagInput("")
-    onOpenChange(false)
+      setTitle("")
+      setDescription("")
+      setIsRepetitive(false)
+      setPeriod("daily")
+      setSelectedDays([])
+      setTags([])
+      setTagInput("")
+      setError(null)
+      onOpenChange(false)
+    } catch (error: any) {
+      const message = error?.response?.data?.message || error?.message || 'Error saving task'
+      if (message.includes('already exists') || message.includes('duplicate')) {
+        setError('A task with this title already exists. Please choose a different title.')
+      } else {
+        setError(message)
+      }
+    }
   }
 
   const handleCancel = () => {
@@ -140,6 +153,11 @@ export const AddTaskDialog = ({
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-5">
+          {error && (
+            <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+              {error}
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="title" className="text-sm font-medium">
               Title

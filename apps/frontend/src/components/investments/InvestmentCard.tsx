@@ -22,46 +22,31 @@ export const InvestmentCard = ({ investment, currency, exchangeRates, viewMode =
     return convertCurrency(amount, fromCurrency as any, currency, exchangeRates)
   }
 
-  const isPolish = isPolishAsset(investment)
-  const purchaseCurrency = investment.purchaseCurrency || "USD"
+  const purchaseCurrency = investment.purchaseCurrency || "PLN"
+  const hasCurrentPrice = !!investment.currentPrice && investment.currentPrice > 0
+  const purchasePrice = investment.purchasePrice || 0
+  const volume = investment.volume || 0
   
-  let currentPriceInPurchaseCurrency = investment.purchasePrice
-  if (investment.currentPrice) {
-    if (isPolish && purchaseCurrency === "PLN") {
-      currentPriceInPurchaseCurrency = investment.currentPrice
-    } else if (exchangeRates && purchaseCurrency !== "USD") {
-      currentPriceInPurchaseCurrency = convertCurrency(
-        investment.currentPrice,
-        "USD",
-        purchaseCurrency as any,
-        exchangeRates
-      )
-    } else if (!isPolish) {
-      currentPriceInPurchaseCurrency = investment.currentPrice
-    } else {
-      currentPriceInPurchaseCurrency = investment.currentPrice
-    }
-  }
+  const profit = investment.profit ?? 0
+  const profitPercent = investment.profitPercent ?? 0
   
-  const totalCostInPurchaseCurrency = investment.volume * investment.purchasePrice
-  const totalValueInPurchaseCurrency = investment.volume * currentPriceInPurchaseCurrency
-  const profitInPurchaseCurrency = totalValueInPurchaseCurrency - totalCostInPurchaseCurrency
-  const profitPercent = investment.purchasePrice > 0 ? ((currentPriceInPurchaseCurrency - investment.purchasePrice) / investment.purchasePrice) * 100 : 0
+  const totalCostInPurchaseCurrency = volume * purchasePrice
+  const totalValueInPurchaseCurrency = hasCurrentPrice && investment.currentPrice ? totalCostInPurchaseCurrency + profit : totalCostInPurchaseCurrency
   
-  const purchasePriceConverted = convert(investment.purchasePrice, purchaseCurrency)
-  const currentPriceConverted = convert(currentPriceInPurchaseCurrency, purchaseCurrency)
+  const purchasePriceConverted = convert(purchasePrice, purchaseCurrency)
+  const currentPriceConverted = hasCurrentPrice && investment.currentPrice ? convert(investment.currentPrice, purchaseCurrency === "PLN" && isPolishAsset(investment) ? "PLN" : "USD") : purchasePriceConverted
   const totalValue = convert(totalValueInPurchaseCurrency, purchaseCurrency)
   const totalCost = convert(totalCostInPurchaseCurrency, purchaseCurrency)
-  const profit = convert(profitInPurchaseCurrency, purchaseCurrency)
+  const profitConverted = convert(profit, purchaseCurrency)
 
-  const isProfit = profit >= 0
+  const isProfit = profitConverted >= 0
 
   if (viewMode === "list") {
     return (
       <Card className="border-foreground/30">
         <CardContent className="p-3">
-          <div className="grid grid-cols-[1fr_auto] gap-4 items-center">
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
               <div className="min-w-0 flex-shrink-0">
                 <h3 className="font-semibold text-sm">{investment.symbol}</h3>
                 <p className="text-xs text-muted-foreground truncate">{investment.name}</p>
@@ -70,17 +55,17 @@ export const InvestmentCard = ({ investment, currency, exchangeRates, viewMode =
                 {investment.type}
               </span>
             </div>
-            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
-              <div className="text-right hidden sm:block w-24">
+            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0 flex-wrap">
+              <div className="text-right hidden md:block w-24">
                 <div className="text-xs text-muted-foreground">Volume</div>
                 <div className="text-sm font-medium">{investment.volume.toLocaleString("pl-PL", { maximumFractionDigits: 8, minimumFractionDigits: 0 })}</div>
               </div>
-              <div className="text-right w-28 sm:w-36">
+              <div className="text-right w-24 sm:w-28 md:w-36">
                 <div className="text-xs text-muted-foreground">Current Value</div>
                 <div className="text-sm font-semibold">{formatCurrency(totalValue, currency)}</div>
               </div>
-              <div className="text-right flex items-center gap-2">
-                <div className="w-36 sm:w-44">
+              <div className="text-right flex items-center gap-2 min-w-0">
+                <div className="w-28 sm:w-36 md:w-44 min-w-0">
                   <div className="text-xs text-muted-foreground">Profit/Loss</div>
                   <div className={`text-sm font-semibold flex items-center justify-end gap-1 ${isProfit ? "text-green-500" : "text-red-500"}`}>
                     {isProfit ? (
@@ -89,12 +74,12 @@ export const InvestmentCard = ({ investment, currency, exchangeRates, viewMode =
                       <TrendingDown className="h-3 w-3 flex-shrink-0" />
                     )}
                     <span className="truncate">
-                      {formatCurrency(Math.abs(profit), currency)} ({profitPercent >= 0 ? "+" : ""}
+                      {formatCurrency(Math.abs(profitConverted), currency)} ({profitPercent >= 0 ? "+" : ""}
                       {profitPercent.toFixed(2)}%)
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 flex-shrink-0">
                   <Button
                     variant="ghost"
                     size="icon"
@@ -172,21 +157,27 @@ export const InvestmentCard = ({ investment, currency, exchangeRates, viewMode =
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Current Value:</span>
-            <span className="font-semibold">{formatCurrency(totalValue, currency)}</span>
+            <span className="font-semibold">
+              {hasCurrentPrice ? formatCurrency(totalValue, currency) : "N/A"}
+            </span>
           </div>
           <div className="flex justify-between items-center pt-2 border-t border-border">
             <span className="text-muted-foreground">Profit/Loss:</span>
-            <div className="flex items-center gap-1">
-              {isProfit ? (
-                <TrendingUp className="h-3 w-3 text-green-500" />
-              ) : (
-                <TrendingDown className="h-3 w-3 text-red-500" />
-              )}
-              <span className={isProfit ? "text-green-500" : "text-red-500"}>
-                {formatCurrency(Math.abs(profit), currency)} ({profitPercent >= 0 ? "+" : ""}
-                {profitPercent.toFixed(2)}%)
-              </span>
-            </div>
+            {hasCurrentPrice ? (
+              <div className="flex items-center gap-1">
+                {isProfit ? (
+                  <TrendingUp className="h-3 w-3 text-green-500" />
+                ) : (
+                  <TrendingDown className="h-3 w-3 text-red-500" />
+                )}
+                <span className={isProfit ? "text-green-500" : "text-red-500"}>
+                  {formatCurrency(Math.abs(profitConverted), currency)} ({profitPercent >= 0 ? "+" : ""}
+                  {profitPercent.toFixed(2)}%)
+                </span>
+              </div>
+            ) : (
+              <span className="text-muted-foreground text-xs">N/A</span>
+            )}
           </div>
         </div>
       </CardContent>

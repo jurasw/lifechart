@@ -57,7 +57,6 @@ export const DietChart = ({ dishes }: DietChartProps) => {
   const chartData = useMemo(() => {
     const dataMap = new Map<string, DataPoint>()
 
-    // Group dishes by date
     dishes.forEach((dish) => {
       const dishDate = new Date(dish.date)
       dishDate.setHours(0, 0, 0, 0)
@@ -83,7 +82,6 @@ export const DietChart = ({ dishes }: DietChartProps) => {
       }
     })
 
-    // Fill in missing dates with zeros
     const dataPoints: DataPoint[] = []
     const currentDate = new Date(dateRange.startDate)
 
@@ -139,7 +137,6 @@ export const DietChart = ({ dishes }: DietChartProps) => {
     const rect = svgRef.current.getBoundingClientRect()
     const x = e.clientX - rect.left
 
-    // Find closest data point
     let closestIndex = 0
     let minDistance = Infinity
 

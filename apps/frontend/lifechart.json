@@ -1,0 +1,665 @@
+{
+  "auth": {
+    "state": {
+      "user": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4OTM0ZDllMDkyNmMyOGZkMjdkZDZhNyIsImVtYWlsIjoianVyZWt3QHdpbmRvd3NsaXZlLmNvbSIsInRpZXIiOiJiYXNpYyIsImlhdCI6MTc1Njk4MzM3NSwiZXhwIjoxNzU5NTc1Mzc1fQ.6djd3_Q_gA40RAYmCNeLKO2IBN19feM7N01yxBhR_Co"
+      }
+    },
+    "version": 0
+  },
+  "cookiesAccepted": true,
+  "currency": "PLN",
+  "unsavedMenu_test-17-07": {
+    "sections": [
+      {
+        "name": "obiad",
+        "description": "",
+        "items": [
+          {
+            "name": "sushi",
+            "description": "surowa ryba",
+            "variants": [
+              {
+                "description": "\u0142oso\u015b",
+                "price": 31,
+                "id": "687913d61bb990004fc1bad6",
+                "imageUrl": "https://res.cloudinary.com/dwvowahgl/image/upload/v1752865690/67eebae2e9fae7930d6e452a/6879135e1bb990004fc1ba5d/fad9aa0c327c67a9c1b8d3d6cff95f15.webp"
+              },
+              {
+                "description": "tu\u0144czyk",
+                "price": 21,
+                "id": "687913d61bb990004fc1bad7"
+              }
+            ],
+            "id": "6879135e1bb990004fc1ba5c"
+          },
+          {
+            "name": "kotlet mielony",
+            "description": "",
+            "price": 14,
+            "id": "687b8c3c8d878e33af323569"
+          }
+        ],
+        "id": "6879135e1bb990004fc1ba5b"
+      },
+      {
+        "name": "test",
+        "description": "",
+        "items": [
+          {
+            "name": "test",
+            "description": "12",
+            "price": 12
+          }
+        ]
+      }
+    ],
+    "customMessage": "",
+    "imageUrl": ""
+  },
+  "countrySelectorLng": 21.0122287,
+  "menu-dark-mode": true,
+  "investments": [
+    {
+      "symbol": "AAPL",
+      "name": "Apple Inc.",
+      "type": "stock",
+      "volume": 1,
+      "purchaseDate": 1643328000000,
+      "purchasePrice": 157.34,
+      "id": "1763284522771",
+      "currentPrice": 272.41,
+      "lastUpdated": 1763311175830
+    },
+    {
+      "symbol": "BABA",
+      "name": "Alibaba Group Holding Limited",
+      "type": "stock",
+      "volume": 2,
+      "purchaseDate": 1641164400000,
+      "purchasePrice": 117.9,
+      "id": "1763285265930",
+      "currentPrice": 153.8,
+      "lastUpdated": 1763311159488
+    },
+    {
+      "symbol": "XTB.WA",
+      "name": "XTB",
+      "type": "stock",
+      "volume": 1,
+      "purchaseDate": 1759960800000,
+      "purchasePrice": 68.8,
+      "id": "1763299162317",
+      "currentPrice": 70.04,
+      "lastUpdated": 1763311176002,
+      "purchaseCurrency": "PLN"
+    },
+    {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "type": "crypto",
+      "volume": 0.00014844,
+      "purchaseDate": 1662328800000,
+      "purchasePrice": 13.97,
+      "purchaseCurrency": "PLN",
+      "id": "1763309511469",
+      "currentPrice": 94209.84,
+      "lastUpdated": 1763311159488
+    },
+    {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "type": "crypto",
+      "volume": 0.00015232,
+      "purchaseDate": 1662588000000,
+      "purchasePrice": 13.82,
+      "purchaseCurrency": "PLN",
+      "id": "1763309678674",
+      "currentPrice": 94209.84,
+      "lastUpdated": 1763311159488
+    },
+    {
+      "symbol": "VOO",
+      "name": "Vanguard S&P 500 ETF",
+      "type": "stock",
+      "volume": 0.08851,
+      "purchaseDate": 1679011200000,
+      "purchasePrice": 518.1262,
+      "id": "xtb-0",
+      "currentPrice": 617.83,
+      "lastUpdated": 1763327230799
+    },
+    {
+      "symbol": "VOO",
+      "name": "Vanguard S&P 500 ETF",
+      "type": "stock",
+      "volume": 0.99502,
+      "purchaseDate": 1654819200000,
+      "purchasePrice": 360.5442,
+      "id": "xtb-1",
+      "currentPrice": 617.83,
+      "lastUpdated": 1763327230799
+    },
+    {
+      "symbol": "VOO",
+      "name": "Vanguard S&P 500 ETF",
+      "type": "stock",
+      "volume": 0.99493,
+      "purchaseDate": 1651622400000,
+      "purchasePrice": 390.8815,
+      "id": "xtb-2",
+      "currentPrice": 617.83,
+      "lastUpdated": 1763327230799
+    },
+    {
+      "symbol": "T",
+      "name": "AT&T Inc",
+      "type": "stock",
+      "volume": 0.99598,
+      "purchaseDate": 1651622400000,
+      "purchasePrice": 19.89,
+      "id": "xtb-3",
+      "currentPrice": 25.59,
+      "lastUpdated": 1763327230799
+    },
+    {
+      "symbol": "T",
+      "name": "AT&T Inc",
+      "type": "stock",
+      "volume": 0.99548,
+      "purchaseDate": 1651622400000,
+      "purchasePrice": 19.91,
+      "id": "xtb-4",
+      "currentPrice": 25.59,
+      "lastUpdated": 1763327230799
+    },
+    {
+      "symbol": "QQQ",
+      "name": "Invesco QQQ",
+      "type": "stock",
+      "volume": 0.99607,
+      "purchaseDate": 1649030400000,
+      "purchasePrice": 366.4396,
+      "id": "xtb-5",
+      "currentPrice": 608.86,
+      "lastUpdated": 1763327230799
+    },
+    {
+      "symbol": "META",
+      "name": "Meta Platforms Inc",
+      "type": "stock",
+      "volume": 0.99716,
+      "purchaseDate": 1649116800000,
+      "purchasePrice": 236.17,
+      "id": "xtb-6",
+      "currentPrice": 609.46,
+      "lastUpdated": 1763327230799
+    },
+    {
+      "symbol": "GOOGL",
+      "name": "Alphabet Inc Class A",
+      "type": "stock",
+      "volume": 1.0123,
+      "purchaseDate": 1659657600000,
+      "purchasePrice": 116.27,
+      "id": "xtb-7",
+      "currentPrice": 276.41,
+      "lastUpdated": 1763327230799
+    },
+    {
+      "symbol": "GOOGL",
+      "name": "Alphabet Inc Class A",
+      "type": "stock",
+      "volume": 1.01316,
+      "purchaseDate": 1659657600000,
+      "purchasePrice": 116.27,
+      "id": "xtb-8",
+      "currentPrice": 276.41,
+      "lastUpdated": 1763327230799
+    },
+    {
+      "symbol": "GOOG",
+      "name": "Alphabet",
+      "type": "stock",
+      "volume": 1.01025,
+      "purchaseDate": 1659657600000,
+      "purchasePrice": 117.1,
+      "id": "xtb-9",
+      "currentPrice": 276.98,
+      "lastUpdated": 1763327230799
+    },
+    {
+      "symbol": "BABA-ADR",
+      "name": "Alibaba-ADR",
+      "type": "stock",
+      "volume": 0.92601,
+      "purchaseDate": 1649116800000,
+      "purchasePrice": 112.85,
+      "id": "xtb-10",
+      "currentPrice": 153.8,
+      "lastUpdated": 1763327230799
+    },
+    {
+      "symbol": "BABA-ADR",
+      "name": "Alibaba-ADR",
+      "type": "stock",
+      "volume": 1.0,
+      "purchaseDate": 1646870400000,
+      "purchasePrice": 92.37,
+      "id": "xtb-11",
+      "currentPrice": 153.8,
+      "lastUpdated": 1763327230799
+    },
+    {
+      "symbol": "SHIBxM",
+      "name": "Shiba (in millions)",
+      "type": "crypto",
+      "volume": 0.997919,
+      "purchaseDate": 1648944000000,
+      "purchasePrice": 26.8559,
+      "id": "xtb-12",
+      "currentPrice": 8.79,
+      "lastUpdated": 1763327230799,
+      "purchaseCurrency": "USD"
+    },
+    {
+      "symbol": "KO",
+      "name": "Coca-Cola",
+      "type": "stock",
+      "volume": 1,
+      "purchaseDate": 1730311140000,
+      "purchasePrice": 267.39,
+      "id": "manual-0",
+      "currentPrice": 267.39,
+      "lastUpdated": 1763329885210
+    },
+    {
+      "symbol": "KO",
+      "name": "Coca-Cola",
+      "type": "stock",
+      "volume": 1,
+      "purchaseDate": 1696442220000,
+      "purchasePrice": 242.22,
+      "id": "manual-1",
+      "currentPrice": 242.22,
+      "lastUpdated": 1763329885210
+    },
+    {
+      "symbol": "KO",
+      "name": "Coca-Cola",
+      "type": "stock",
+      "volume": 2,
+      "purchaseDate": 1644957720000,
+      "purchasePrice": 242.88,
+      "id": "manual-2",
+      "currentPrice": 242.88,
+      "lastUpdated": 1763329885210
+    },
+    {
+      "symbol": "PZU",
+      "name": "PZU SA",
+      "type": "stock",
+      "volume": 2,
+      "purchaseDate": 1761139020000,
+      "purchasePrice": 56.06,
+      "id": "manual-3",
+      "currentPrice": 56.06,
+      "lastUpdated": 1763329885210
+    },
+    {
+      "symbol": "PZU",
+      "name": "PZU SA",
+      "type": "stock",
+      "volume": 3,
+      "purchaseDate": 1730710800000,
+      "purchasePrice": 40.38,
+      "id": "manual-4",
+      "currentPrice": 40.38,
+      "lastUpdated": 1763329885210
+    },
+    {
+      "symbol": "IUSA",
+      "name": "iShares IUSA",
+      "type": "stock",
+      "volume": 0.10540521,
+      "purchaseDate": 1729604640000,
+      "purchasePrice": 6.1,
+      "purchaseCurrency": "EUR",
+      "id": "iusa1",
+      "currentPrice": null,
+      "lastUpdated": null
+    },
+    {
+      "symbol": "IUSA",
+      "name": "iShares IUSA",
+      "type": "stock",
+      "volume": 0.40362764,
+      "purchaseDate": 1728476220000,
+      "purchasePrice": 23.37,
+      "purchaseCurrency": "EUR",
+      "id": "iusa2",
+      "currentPrice": null,
+      "lastUpdated": null
+    },
+    {
+      "symbol": "AMZN",
+      "name": "Amazon",
+      "type": "stock",
+      "volume": 1,
+      "purchaseDate": 1696441500000,
+      "purchasePrice": 126.04,
+      "purchaseCurrency": "USD",
+      "id": "amzn1",
+      "currentPrice": null,
+      "lastUpdated": null
+    },
+    {
+      "symbol": "XRP",
+      "name": "XRP",
+      "type": "crypto",
+      "volume": 22.35,
+      "purchaseDate": 1710508860000,
+      "purchasePrice": 220,
+      "purchaseCurrency": "PLN",
+      "id": "xrp1",
+      "currentPrice": null,
+      "lastUpdated": null
+    },
+    {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "type": "crypto",
+      "volume": 0.00047,
+      "purchaseDate": 1727348880000,
+      "purchasePrice": 205.14,
+      "purchaseCurrency": "PLN",
+      "id": "btc_small1",
+      "currentPrice": null,
+      "lastUpdated": null
+    },
+    {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "type": "crypto",
+      "volume": 0.00045,
+      "purchaseDate": 1726681560000,
+      "purchasePrice": 207.89,
+      "purchaseCurrency": "PLN",
+      "id": "btc_small2",
+      "currentPrice": null,
+      "lastUpdated": null
+    },
+    {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "type": "crypto",
+      "volume": 0.00012,
+      "purchaseDate": 1707953700000,
+      "purchasePrice": null,
+      "purchaseCurrency": "DOT",
+      "id": "btc_small3",
+      "currentPrice": null,
+      "lastUpdated": null
+    },
+    {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "type": "crypto",
+      "volume": 0.001181,
+      "purchaseDate": 1763330525707,
+      "purchasePrice": 402.28,
+      "purchaseCurrency": "PLN",
+      "id": "1050523292629",
+      "currentPrice": 93700,
+      "lastUpdated": 1763330525707
+    },
+    {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "type": "crypto",
+      "volume": 0.000664,
+      "purchaseDate": 1763330525707,
+      "purchasePrice": 226.16,
+      "purchaseCurrency": "PLN",
+      "id": "2261375151559",
+      "currentPrice": 93700,
+      "lastUpdated": 1763330525707
+    },
+    {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "type": "crypto",
+      "volume": 0.00034,
+      "purchaseDate": 1763330525707,
+      "purchasePrice": 115.73,
+      "purchaseCurrency": "PLN",
+      "id": "7131161543100",
+      "currentPrice": 93700,
+      "lastUpdated": 1763330525707
+    },
+    {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "type": "crypto",
+      "volume": 0.000496,
+      "purchaseDate": 1763330525707,
+      "purchasePrice": 168.91,
+      "purchaseCurrency": "PLN",
+      "id": "2628944855329",
+      "currentPrice": 93700,
+      "lastUpdated": 1763330525707
+    }
+  ],
+  "unsavedMenu_test-25-07": {
+    "sections": [
+      {
+        "name": "test",
+        "description": "",
+        "items": [
+          {
+            "name": "test",
+            "description": "",
+            "price": 12,
+            "id": "68836482ec17b2aa243c17d7",
+            "imageUrl": "https://res.cloudinary.com/dwvowahgl/image/upload/v1753901912/67eebae2e9fae7930d6e452a/68836482ec17b2aa243c17d8/8c4e9733ff377acb69bf0e5e7760ca5f.webp"
+          }
+        ],
+        "id": "68836482ec17b2aa243c17d6"
+      }
+    ],
+    "customMessage": ""
+  },
+  "ph_phc_paDnPSYRnbfggxQ5yDkcQxvXIOQ61iVwn2MKeF4rFtv_posthog": {
+    "distinct_id": "019a2622-01af-7d47-a6e1-173e3fc70292",
+    "$sesid": [
+      1761660777606,
+      "019a2b2a-1c2b-76a6-a56e-5282eb6c7887",
+      1761660771370
+    ],
+    "$initial_person_info": {
+      "r": "$direct",
+      "u": "http://localhost:5173/"
+    },
+    "$initialization_time": "2025-10-28T14:12:51.240Z",
+    "$configured_session_timeout_ms": 1800000,
+    "$device_id": "019a2622-01af-7d47-a6e1-173e3fc70292",
+    "$user_state": "anonymous",
+    "$autocapture_disabled_server_side": false,
+    "$heatmaps_enabled_server_side": true,
+    "$web_vitals_enabled_server_side": true,
+    "$web_vitals_allowed_metrics": null,
+    "$exception_capture_enabled_server_side": false,
+    "$error_tracking_suppression_rules": [],
+    "$dead_clicks_enabled_server_side": false,
+    "$active_feature_flags": [],
+    "$enabled_feature_flags": {},
+    "$feature_flag_payloads": {},
+    "$feature_flag_details": {},
+    "$feature_flag_request_id": "2a77b6f3-956a-4084-87bd-04ca8bef6661",
+    "$capture_rate_limit": {
+      "tokens": 98.02,
+      "last": 1761660777606
+    },
+    "$client_session_props": {
+      "sessionId": "019a2b2a-1c2b-76a6-a56e-5282eb6c7887",
+      "props": {
+        "r": "$direct",
+        "u": "http://localhost:5173/"
+      }
+    },
+    "$session_recording_remote_config": {
+      "enabled": true,
+      "endpoint": "/s/",
+      "consoleLogRecordingEnabled": true,
+      "recorderVersion": "v2",
+      "sampleRate": null,
+      "minimumDurationMilliseconds": null,
+      "linkedFlag": null,
+      "networkPayloadCapture": {
+        "capturePerformance": {
+          "network_timing": true,
+          "web_vitals": true,
+          "web_vitals_allowed_metrics": null
+        }
+      },
+      "masking": null,
+      "urlTriggers": [],
+      "scriptConfig": null,
+      "urlBlocklist": [],
+      "eventTriggers": [],
+      "triggerMatchType": null,
+      "canvasRecording": {}
+    }
+  },
+  "countrySelectorLat": 52.2296756,
+  "tasks": [
+    {
+      "id": "1763226462893",
+      "title": "no porn \ud83d\udca6",
+      "description": "",
+      "isRepetitive": true,
+      "period": "daily",
+      "createdAt": 1763226462893,
+      "completed": true,
+      "completedDates": [
+        1763161200000,
+        1763247600000
+      ],
+      "tags": [
+        "mind"
+      ]
+    },
+    {
+      "id": "1763227070238",
+      "title": "read 10 pages \ud83d\udcd5",
+      "description": "",
+      "isRepetitive": true,
+      "period": "daily",
+      "completed": false,
+      "createdAt": 1763227070238
+    },
+    {
+      "id": "1763227441102",
+      "title": "buy stocks \ud83d\udcc8",
+      "description": "https://xstation5.xtb.com/?branch=pl#/real/loggedIn",
+      "isRepetitive": true,
+      "period": "monthly",
+      "completed": true,
+      "createdAt": 1763227441102,
+      "completedDates": [
+        1763161200000,
+        1763247600000,
+        1759269600000
+      ]
+    },
+    {
+      "title": "Meditate \ud83e\uddd8\u200d\u2640\ufe0f",
+      "description": "",
+      "isRepetitive": true,
+      "period": "daily",
+      "id": "1763230401575",
+      "completed": true,
+      "createdAt": 1763230401575,
+      "completedDates": [
+        1763161200000,
+        1763247600000,
+        1763074800000,
+        1762988400000,
+        1762902000000,
+        1762815600000,
+        1762729200000,
+        1762642800000,
+        1762556400000,
+        1762470000000,
+        1762383600000,
+        1762297200000,
+        1762210800000,
+        1762124400000,
+        1762038000000,
+        1761951600000,
+        1761865200000,
+        1761778800000,
+        1761692400000,
+        1761606000000,
+        1761519600000,
+        1761429600000,
+        1761343200000,
+        1761256800000,
+        1761170400000,
+        1761084000000,
+        1760997600000,
+        1760911200000,
+        1760824800000,
+        1760220000000,
+        1759701600000,
+        1760306400000,
+        1759615200000,
+        1759788000000,
+        1760392800000,
+        1759874400000,
+        1760479200000,
+        1760565600000,
+        1759960800000,
+        1759269600000,
+        1759356000000,
+        1759442400000,
+        1759528800000,
+        1760133600000,
+        1760047200000,
+        1760652000000,
+        1760738400000,
+        1759183200000,
+        1759096800000,
+        1759010400000,
+        1758664800000,
+        1758751200000,
+        1758837600000,
+        1758924000000
+      ]
+    },
+    {
+      "title": "leet code \ud83e\uddd1\u200d\ud83d\udcbb",
+      "description": "",
+      "isRepetitive": true,
+      "period": "weekly",
+      "selectedDays": [
+        "saturday",
+        "sunday"
+      ],
+      "id": "1763230742169",
+      "completed": true,
+      "createdAt": 1763230742169,
+      "completedDates": [
+        1763161200000,
+        1762556400000,
+        1762642800000,
+        1763247600000,
+        1761951600000,
+        1762038000000,
+        1761429600000
+      ]
+    }
+  ],
+  "exportedAt": "2025-11-16T16:44:06.633Z",
+  "version": "1.0.0"
+}

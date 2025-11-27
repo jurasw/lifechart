@@ -45,7 +45,6 @@ export const searchFoodItems = async (query: string): Promise<Array<{ id: string
   if (!query || query.length < 2) return []
 
   try {
-    // Try Edamam first if keys are available
     if (EDAMAM_APP_ID && EDAMAM_APP_KEY) {
       const response = await fetch(
         `https://api.edamam.com/api/food-database/v2/parser?ingr=${encodeURIComponent(query)}&app_id=${EDAMAM_APP_ID}&app_key=${EDAMAM_APP_KEY}`
@@ -80,10 +79,8 @@ export const searchFoodItems = async (query: string): Promise<Array<{ id: string
         }
       }
     } catch (error) {
-      console.error("Error with Open Food Facts API:", error)
     }
   } catch (error) {
-    console.error("Error searching food items:", error)
   }
 
   return []
@@ -91,7 +88,6 @@ export const searchFoodItems = async (query: string): Promise<Array<{ id: string
 
 export const fetchNutritionData = async (foodId: string, foodName: string): Promise<NutritionData | null> => {
   try {
-    // Try Edamam first if keys are available
     if (EDAMAM_APP_ID && EDAMAM_APP_KEY) {
       const response = await fetch(
         `https://api.edamam.com/api/food-database/v2/nutrients?app_id=${EDAMAM_APP_ID}&app_key=${EDAMAM_APP_KEY}`,
@@ -190,10 +186,8 @@ export const fetchNutritionData = async (foodId: string, foodName: string): Prom
         }
       }
     } catch (error) {
-      console.error("Error with Open Food Facts API:", error)
     }
   } catch (error) {
-    console.error("Error fetching nutrition data:", error)
   }
 
   return null
@@ -271,7 +265,6 @@ export const parseDishDescription = async (description: string): Promise<Nutriti
         }
       }
     } catch (error) {
-      console.error("Error with OpenAI API:", error)
     }
   }
 
@@ -327,7 +320,6 @@ export const parseDishDescription = async (description: string): Promise<Nutriti
       }
     }
   } catch (error) {
-    console.error("Error parsing dish description:", error)
   }
 
   return null

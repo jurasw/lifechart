@@ -192,7 +192,7 @@ export const TaskHistoryDialog = ({
                         variant={isCompleted ? "default" : "outline"}
                         onClick={() => handleMonthClick(index, year)}
                         disabled={disabled}
-                        className={`h-12 ${isCompleted ? "bg-accent text-accent-foreground border border-white" : ""}`}
+                        className={`h-12 ${isCompleted ? "bg-accent text-accent-foreground border border-foreground" : ""}`}
                       >
                         {monthName.slice(0, 3)}
                       </Button>

@@ -64,3 +64,94 @@
     min-height: 100vh;
   }
 }
+
+@layer utilities {
+  .rdp-button:focus-visible,
+  .rdp-button:focus {
+    outline: none !important;
+    ring-color: hsl(var(--foreground)) !important;
+  }
+  
+  .rdp-day_selected,
+  .rdp-day_selected:focus-visible,
+  .rdp-day_selected:hover,
+  .rdp-day_selected:focus,
+  button.rdp-day_selected,
+  button.rdp-day_selected:focus-visible,
+  button.rdp-day_selected:hover {
+    background-color: hsl(var(--accent)) !important;
+    color: hsl(var(--accent-foreground)) !important;
+    border-color: hsl(var(--foreground)) !important;
+  }
+  
+  .rdp-day_range_start,
+  .rdp-day_range_end,
+  .rdp-day_range_middle,
+  button.rdp-day_range_start,
+  button.rdp-day_range_end,
+  button.rdp-day_range_middle {
+    background-color: hsl(var(--accent)) !important;
+    color: hsl(var(--accent-foreground)) !important;
+    border-color: hsl(var(--foreground)) !important;
+  }
+  
+  .rdp-day:focus-visible,
+  .rdp-day:focus,
+  button.rdp-day:focus-visible,
+  button.rdp-day:focus {
+    outline: none !important;
+    ring-color: hsl(var(--foreground)) !important;
+  }
+  
+  .rdp-day:hover:not([aria-disabled]),
+  button.rdp-day:hover:not([aria-disabled]) {
+    background-color: hsl(var(--accent) / 0.5) !important;
+    color: hsl(var(--accent-foreground)) !important;
+  }
+  
+  .rdp-button_previous:focus-visible,
+  .rdp-button_next:focus-visible,
+  .rdp-button_previous:focus,
+  .rdp-button_next:focus,
+  button.rdp-button_previous:focus-visible,
+  button.rdp-button_next:focus-visible {
+    outline: none !important;
+    ring-color: hsl(var(--foreground)) !important;
+  }
+  
+  .rdp-button_previous:hover,
+  .rdp-button_next:hover,
+  button.rdp-button_previous:hover,
+  button.rdp-button_next:hover {
+    background-color: hsl(var(--accent)) !important;
+    color: hsl(var(--accent-foreground)) !important;
+  }
+  
+  .rdp-day_today,
+  .rdp-day_today:not(.rdp-day_selected),
+  button.rdp-day_today {
+    background-color: hsl(var(--accent)) !important;
+    color: hsl(var(--accent-foreground)) !important;
+  }
+  
+  .rdp-day_selected.rdp-day_today,
+  button.rdp-day_selected.rdp-day_today {
+    background-color: hsl(var(--accent)) !important;
+    color: hsl(var(--accent-foreground)) !important;
+    border-color: hsl(var(--foreground)) !important;
+  }
+  
+  .rdp-day[aria-selected="true"],
+  button.rdp-day[aria-selected="true"] {
+    background-color: hsl(var(--accent)) !important;
+    color: hsl(var(--accent-foreground)) !important;
+    border-color: hsl(var(--foreground)) !important;
+  }
+  
+  .rdp-day[data-selected="true"],
+  button.rdp-day[data-selected="true"] {
+    background-color: hsl(var(--accent)) !important;
+    color: hsl(var(--accent-foreground)) !important;
+    border-color: hsl(var(--foreground)) !important;
+  }
+}

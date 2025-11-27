@@ -34,38 +34,28 @@ export const useAuthStore = create<AuthState>()(
 
       setAccessToken: (token) => {
         set({ accessToken: token });
-        if (token) {
-          localStorage.setItem('access_token', token);
-        } else {
-          localStorage.removeItem('access_token');
-        }
       },
 
       setLoading: (loading) => set({ loading }),
 
       fetchUser: async () => {
         const { accessToken } = get();
-        const token = accessToken || localStorage.getItem('access_token');
         
-        if (!token) {
+        if (!accessToken) {
           set({ loading: false, isAuthenticated: false });
           return;
         }
 
         try {
-          console.log('Fetching user with token:', token.substring(0, 20) + '...');
           const response = await api.get('/auth/me');
-          console.log('User fetched successfully:', response.data);
           set({ 
             user: response.data, 
             isAuthenticated: true, 
             loading: false,
-            accessToken: token 
+            accessToken: accessToken 
           });
         } catch (error: any) {
-          console.error('Error fetching user:', error.response?.data || error.message);
           set({ user: null, accessToken: null, isAuthenticated: false, loading: false });
-          localStorage.removeItem('access_token');
         }
       },
 
@@ -87,7 +77,6 @@ export const useAuthStore = create<AuthState>()(
 
       logout: () => {
         set({ user: null, accessToken: null, isAuthenticated: false });
-        localStorage.removeItem('access_token');
       },
     }),
     {

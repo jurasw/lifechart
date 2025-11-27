@@ -2,6 +2,7 @@ import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Popover } from "@/components/ui/popover"
 import { ConfirmDialog } from "@/components/ConfirmDialog"
+import { ErrorDialog } from "@/components/ErrorDialog"
 import { Settings, Download, Upload, Trash2 } from "lucide-react"
 
 interface SettingsPopoverProps {
@@ -22,6 +23,8 @@ export const SettingsPopover = ({ onExport, onImport, onClearAll }: SettingsPopo
   const [showImportConfirm, setShowImportConfirm] = useState(false)
   const [importData, setImportData] = useState<any>(null)
   const [importTaskCount, setImportTaskCount] = useState(0)
+  const [showErrorDialog, setShowErrorDialog] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -37,8 +40,8 @@ export const SettingsPopover = ({ onExport, onImport, onClearAll }: SettingsPopo
         setShowImportConfirm(true)
         setIsOpen(false)
       } catch (error) {
-        console.error("Failed to parse imported file:", error)
-        alert("Failed to import data. Please check the file format.")
+        setErrorMessage("Failed to import data. Please check the file format.")
+        setShowErrorDialog(true)
       }
     }
     reader.readAsText(file)
@@ -129,6 +132,12 @@ export const SettingsPopover = ({ onExport, onImport, onClearAll }: SettingsPopo
         description="This will permanently delete all your tasks. This action cannot be undone. Are you sure?"
         confirmText="Clear All"
         onConfirm={onClearAll}
+      />
+      <ErrorDialog
+        open={showErrorDialog}
+        onOpenChange={setShowErrorDialog}
+        title="Error"
+        message={errorMessage}
       />
     </>
   )

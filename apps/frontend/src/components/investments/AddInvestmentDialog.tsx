@@ -21,7 +21,7 @@ import type { SymbolSuggestion } from "@/services/symbolSearch";
 interface AddInvestmentDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (investment: Omit<Investment, "id">) => void;
+  onSubmit: (investment: Omit<Investment, "id">) => Promise<void>;
   editingInvestment: Investment | null;
 }
 
@@ -37,7 +37,7 @@ export const AddInvestmentDialog = ({
   const [volume, setVolume] = useState("");
   const [purchaseDate, setPurchaseDate] = useState<Date | undefined>(undefined);
   const [purchasePrice, setPurchasePrice] = useState("");
-  const [purchaseCurrency, setPurchaseCurrency] = useState<Currency>("USD");
+  const [purchaseCurrency, setPurchaseCurrency] = useState<Currency>("PLN");
   const [suggestions, setSuggestions] = useState<SymbolSuggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -91,7 +91,6 @@ export const AddInvestmentDialog = ({
         setPurchasePrice(priceData.price.toFixed(2));
       }
     } catch (error) {
-      console.error("Error fetching price:", error);
     } finally {
       setIsFetchingPrice(false);
     }
@@ -105,7 +104,7 @@ export const AddInvestmentDialog = ({
       setVolume(editingInvestment.volume.toString());
       setPurchaseDate(new Date(editingInvestment.purchaseDate));
       setPurchasePrice(editingInvestment.purchasePrice.toString());
-      setPurchaseCurrency(editingInvestment.purchaseCurrency || "USD");
+      setPurchaseCurrency(editingInvestment.purchaseCurrency || "PLN");
       setSuggestions([]);
       setShowSuggestions(false);
     } else {
@@ -115,7 +114,7 @@ export const AddInvestmentDialog = ({
       setVolume("");
       setPurchaseDate(undefined);
       setPurchasePrice("");
-      setPurchaseCurrency("USD");
+      setPurchaseCurrency("PLN");
       setSuggestions([]);
       setShowSuggestions(false);
     }
@@ -147,23 +146,25 @@ export const AddInvestmentDialog = ({
     };
   }, [type, symbol, handleSymbolSearch]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!symbol || !name || !volume || !purchaseDate || !purchasePrice) {
       return;
     }
 
-    onSubmit({
-      symbol: symbol.toUpperCase(),
-      name,
-      type,
-      volume: parseFloat(volume),
-      purchaseDate: purchaseDate.getTime(),
-      purchasePrice: parseFloat(purchasePrice),
-      purchaseCurrency: purchaseCurrency,
-    });
-
-    onOpenChange(false);
+    try {
+      await onSubmit({
+        symbol: symbol.toUpperCase(),
+        name,
+        type,
+        volume: parseFloat(volume),
+        purchaseDate: purchaseDate.getTime(),
+        purchasePrice: parseFloat(purchasePrice),
+        purchaseCurrency: purchaseCurrency,
+      });
+      onOpenChange(false);
+    } catch (error) {
+    }
   };
 
   return (

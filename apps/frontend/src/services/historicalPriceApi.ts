@@ -101,7 +101,6 @@ export const fetchHistoricalPrices = async (
     if (error.message === "Request aborted") {
       return []
     }
-    console.error(`Error fetching historical prices for ${symbol}:`, error)
     return []
   }
 }
@@ -243,7 +242,6 @@ export const fetchMultipleHistoricalPrices = async (
     }
   } catch (error: unknown) {
     if (error instanceof Error && error.message !== "Request aborted") {
-      console.error("Error fetching bulk historical prices:", error)
     }
   }
 

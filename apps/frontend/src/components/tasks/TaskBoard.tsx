@@ -23,9 +23,14 @@ export const TaskBoard = ({ task, period, onPeriodChange }: TaskBoardProps) => {
   
   const filteredDates = allBoardDates.filter((date) => {
     if (period === "week") {
+      if (task.period === "daily") {
+        return shouldShowDate(task, date)
+      }
       const normalizedDate = new Date(date)
       normalizedDate.setHours(0, 0, 0, 0)
-      return normalizedDate.getTime() >= todayTimestamp && shouldShowDate(task, date)
+      if (normalizedDate.getTime() < todayTimestamp) {
+        return false
+      }
     }
     return shouldShowDate(task, date)
   })

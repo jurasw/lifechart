@@ -11,9 +11,9 @@ import { GroupedInvestmentCard } from "@/components/investments/GroupedInvestmen
 import { InvestmentChart } from "@/components/investments/InvestmentChart"
 import { InvestmentTimelineChart } from "@/components/investments/InvestmentTimelineChart"
 import { ConfirmDialog } from "@/components/ConfirmDialog"
-import { fetchMultiplePrices } from "@/services/priceApi"
 import { fetchExchangeRates } from "@/services/exchangeRates"
 import { convertCurrency } from "@/services/exchangeRates"
+import { investmentsApi } from "@/services/investmentsApi"
 import type { Investment } from "@/types/investment"
 import type { ExchangeRates } from "@/services/exchangeRates"
 import { isPolishAsset } from "@/utils/currencyUtils"
@@ -21,6 +21,7 @@ import { isPolishAsset } from "@/utils/currencyUtils"
 export const InvestmentPage = () => {
   const {
     investments,
+    setInvestments,
     editingInvestmentId,
     setEditingInvestmentId,
     handleAdd,
@@ -33,6 +34,7 @@ export const InvestmentPage = () => {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [investmentToDelete, setInvestmentToDelete] = useState<string | null>(null)
   const [exchangeRates, setExchangeRates] = useState<ExchangeRates | null>(null)
@@ -40,8 +42,21 @@ export const InvestmentPage = () => {
   const [sortBy, setSortBy] = useState<"date" | "value">("date")
   const [isSortPopoverOpen, setIsSortPopoverOpen] = useState(false)
 
-  const abortControllerRef = useRef<AbortController | null>(null)
-  const refreshTimeoutRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    const loadInvestments = async () => {
+      setIsLoading(true)
+      try {
+        const data = await investmentsApi.getAll()
+        setInvestments(data || [])
+      } catch (error) {
+        setInvestments([])
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadInvestments()
+  }, [setInvestments])
 
   const editingInvestment =
     investments.find((inv) => inv.id === editingInvestmentId) || null
@@ -49,51 +64,15 @@ export const InvestmentPage = () => {
   const refreshPrices = useCallback(async () => {
     if (investments.length === 0) return
 
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-    }
-
-    abortControllerRef.current = new AbortController()
-    const signal = abortControllerRef.current.signal
-
     setIsRefreshing(true)
     try {
-      const symbols = investments.map((inv) => ({
-        symbol: inv.symbol,
-        type: inv.type,
-      }))
-
-      const priceMap = await fetchMultiplePrices(symbols, signal)
-
-      if (signal.aborted) {
-        return
-      }
-
-      const updates = investments
-        .map((inv) => {
-          const priceData = priceMap.get(inv.symbol)
-          if (priceData) {
-            return {
-              id: inv.id,
-              currentPrice: priceData.price,
-              lastUpdated: priceData.timestamp,
-            }
-          }
-          return null
-        })
-        .filter((update): update is { id: string; currentPrice: number; lastUpdated: number } => update !== null)
-
-      handleUpdatePrices(updates)
+      const data = await investmentsApi.getAll()
+      setInvestments(data)
     } catch (error: unknown) {
-      if (error instanceof Error && error.message !== "Request aborted") {
-        console.error("Error refreshing prices:", error)
-      }
     } finally {
-      if (!signal.aborted) {
-        setIsRefreshing(false)
-      }
+      setIsRefreshing(false)
     }
-  }, [investments, handleUpdatePrices])
+  }, [investments.length, setInvestments])
 
   useEffect(() => {
     const loadExchangeRates = async () => {
@@ -106,27 +85,6 @@ export const InvestmentPage = () => {
   const investmentsRef = useRef(investments)
   investmentsRef.current = investments
 
-  useEffect(() => {
-    if (refreshTimeoutRef.current) {
-      clearTimeout(refreshTimeoutRef.current)
-    }
-
-    const needsRefresh = investmentsRef.current.some(
-      (inv) => !inv.lastUpdated || Date.now() - inv.lastUpdated > 5 * 60 * 1000
-    )
-
-    if (needsRefresh && investmentsRef.current.length > 0) {
-      refreshTimeoutRef.current = window.setTimeout(() => {
-        refreshPrices()
-      }, 1000)
-    }
-
-    return () => {
-      if (refreshTimeoutRef.current) {
-        clearTimeout(refreshTimeoutRef.current)
-      }
-    }
-  }, [investments.length, refreshPrices])
 
   useEffect(() => {
     const loadExchangeRates = async () => {
@@ -138,23 +96,20 @@ export const InvestmentPage = () => {
     }
   }, [currency])
 
-  useEffect(() => {
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort()
-      }
-      if (refreshTimeoutRef.current) {
-        clearTimeout(refreshTimeoutRef.current)
-      }
-    }
-  }, [])
 
-  const handleSubmit = (investmentData: Omit<Investment, "id">) => {
-    if (editingInvestmentId) {
-      handleUpdate(editingInvestmentId, investmentData)
-      setEditingInvestmentId(null)
-    } else {
-      handleAdd(investmentData)
+  const handleSubmit = async (investmentData: Omit<Investment, "id">) => {
+    try {
+      if (editingInvestmentId) {
+        await investmentsApi.update(editingInvestmentId, investmentData)
+        handleUpdate(editingInvestmentId, investmentData)
+        setEditingInvestmentId(null)
+      } else {
+        const newInvestment = await investmentsApi.create(investmentData)
+        handleAdd(newInvestment)
+      }
+      const data = await investmentsApi.getAll()
+      setInvestments(data)
+    } catch (error) {
     }
   }
 
@@ -168,29 +123,35 @@ export const InvestmentPage = () => {
     setShowDeleteConfirm(true)
   }
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (investmentToDelete) {
-      handleDelete(investmentToDelete)
+      try {
+        await investmentsApi.delete(investmentToDelete)
+        handleDelete(investmentToDelete)
+        const data = await investmentsApi.getAll()
+        setInvestments(data)
+      } catch (error) {
+      }
       setInvestmentToDelete(null)
     }
     setShowDeleteConfirm(false)
   }
 
   return (
-    <div className="h-full p-3 sm:p-4 md:p-6 lg:p-8 overflow-y-auto">
+    <div className="h-full p-2 sm:p-4 md:p-6 lg:p-8 overflow-y-auto pt-16 lg:pt-3">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">Investment Portfolio</h1>
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold">Investment Portfolio</h1>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <div className="flex items-center gap-2">
-              <label htmlFor="currency" className="text-sm text-muted-foreground">
+              <label htmlFor="currency" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
                 Currency:
               </label>
               <Select
                 id="currency"
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value as "USD" | "EUR" | "PLN")}
-                className="w-20 h-9"
+                className="w-20 h-9 text-xs sm:text-sm"
               >
                 <option value="USD">USD</option>
                 <option value="EUR">EUR</option>
@@ -219,8 +180,8 @@ export const InvestmentPage = () => {
               open={isSortPopoverOpen}
               onOpenChange={setIsSortPopoverOpen}
               trigger={
-                <Button variant="outline" size="sm" className="h-9">
-                  <ArrowUpDown className="h-4 w-4 mr-2" />
+                <Button variant="outline" size="sm" className="h-9 text-xs sm:text-sm">
+                  <ArrowUpDown className="h-4 w-4 sm:mr-2" />
                   <span className="hidden sm:inline">Sort</span>
                 </Button>
               }
@@ -275,7 +236,14 @@ export const InvestmentPage = () => {
           </div>
         </div>
 
-        {investments.length === 0 ? (
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="flex flex-col items-center gap-4">
+              <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
+              <p className="text-muted-foreground">Loading investments...</p>
+            </div>
+          </div>
+        ) : investments.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground mb-4">No investments yet</p>
             <Button
@@ -289,8 +257,8 @@ export const InvestmentPage = () => {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-4">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-6">
+            <div className="xl:col-span-2 space-y-4">
               {(() => {
                 const grouped = investments.reduce((acc, inv) => {
                   const key = inv.symbol.toUpperCase()
@@ -398,7 +366,7 @@ export const InvestmentPage = () => {
               })()}
             </div>
 
-            <div className="lg:col-span-1 space-y-4">
+            <div className="xl:col-span-1 space-y-4">
               <InvestmentTimelineChart
                 investments={investments}
                 currency={currency}

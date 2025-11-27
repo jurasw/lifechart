@@ -216,7 +216,6 @@ export const searchSymbols = async (query: string, filterType?: "stock" | "crypt
       })
     }
   } catch (error) {
-    console.error("Error searching symbols:", error)
   }
   
   if (filterType !== "crypto" && filterType !== "bond" && suggestions.length === 0 && query.includes(".")) {

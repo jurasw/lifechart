@@ -12,6 +12,8 @@ export interface Investment {
   purchaseCurrency: Currency
   currentPrice?: number
   lastUpdated?: number
+  profit?: number
+  profitPercent?: number
 }
 
 export interface PriceData {

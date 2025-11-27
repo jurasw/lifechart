@@ -1,9 +1,8 @@
 import { useState } from "react"
-import { useLocalStorage } from "./useLocalStorage"
 import type { DailyDish } from "@/types/diet"
 
 export const useDiet = () => {
-  const [dishes, setDishes] = useLocalStorage<DailyDish[]>("diet_dishes", [])
+  const [dishes, setDishes] = useState<DailyDish[]>([])
   const [editingDishId, setEditingDishId] = useState<string | null>(null)
 
   const handleAdd = (dish: Omit<DailyDish, "id" | "createdAt">) => {
