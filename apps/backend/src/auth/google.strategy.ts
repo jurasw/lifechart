@@ -6,8 +6,19 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(private configService: ConfigService) {
+    const callbackURL = configService.get<string>('GOOGLE_CALLBACK_URL');
+    const vercelUrl = configService.get<string>('VERCEL_URL');
     const port = configService.get<string>('PORT') || '3000';
-    const callbackURL = configService.get<string>('GOOGLE_CALLBACK_URL') || `http://localhost:${port}/auth/google/callback`;
+    
+    let finalCallbackURL = callbackURL;
+    if (!finalCallbackURL) {
+      if (vercelUrl) {
+        finalCallbackURL = `https://${vercelUrl}/auth/google/callback`;
+      } else {
+        finalCallbackURL = `http://localhost:${port}/auth/google/callback`;
+      }
+    }
+    
     const clientID = configService.get<string>('GOOGLE_CLIENT_ID');
     const clientSecret = configService.get<string>('GOOGLE_CLIENT_SECRET');
     
@@ -18,7 +29,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     super({
       clientID,
       clientSecret,
-      callbackURL,
+      callbackURL: finalCallbackURL,
       scope: ['email', 'profile'],
     });
   }
